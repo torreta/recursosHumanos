@@ -17,7 +17,6 @@ class CreateUserStatus extends Migration
             $table->bigIncrements('id')->unique();
             $table->text('name');
             $table->text('description');
-            $table->timestamps();
         });
     }
 

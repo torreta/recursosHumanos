@@ -16,7 +16,6 @@ class CreateIdentificationType extends Migration
         Schema::create('Identification_Types', function (Blueprint $table) {
             $table->bigIncrements('id')->unique();
             $table->string('name', 100)->unique();
-            $table->timestamps();
         });
     }
 
