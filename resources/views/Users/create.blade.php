@@ -50,6 +50,7 @@
                     <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" value="">
                     <label for="title">Repetir Contraseña:</label>
                     <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Contraseña" value="">
+
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>

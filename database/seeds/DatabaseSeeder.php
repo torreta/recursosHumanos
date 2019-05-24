@@ -14,7 +14,8 @@ class DatabaseSeeder extends Seeder
     	    $this->call([
         user_identification_types_seeder::class,
         roles_seeder::class,
-        user_status_seeder::class
+        user_status_seeder::class,
+        user_seeder::class
     ]);
 
     }

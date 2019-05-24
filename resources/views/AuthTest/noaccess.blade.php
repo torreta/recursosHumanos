@@ -65,31 +65,12 @@
     </head>
     <body>
         <div class="flex-center position-ref full-height">
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/') }}">Home</a>
-                        <a href="{{ route('logout') }}">Logout</a>
-                        <a href="{{ route('candidate') }}">Postularse(candidato)</a>
-                        <a href="{{ route('moderator') }}">Moderar</a>
-                        <a href="{{ route('admin') }}">Admin</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register.index') }}">Register</a>
-                    @endauth
-                </div>
             <div class="content">
                 <div class="title m-b-md">
-                    RR.HH
+                    Acceso no autorizado (solo va a redireccionar)
                 </div>
 
                 <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
                 </div>
             </div>
         </div>

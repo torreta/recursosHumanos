@@ -15,9 +15,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/register', 'UserController@Index');
-Route::resource('/register', 'UserController');
 
+Route::resource('/register', 'UserController');
+Route::get('/register', 'UserController@Index')->name('register.index');
+//Authentication
+Route::get('/login','UserController@showLogin')->name('login');
+Route::post('/login', 'UserController@Login');
+Route::get('/logout', 'UserController@Logout')->name('logout');
+Route::get('/candidate','UserController@TestCandidate')->name('candidate')->middleware('logged','IsCandidate');
+Route::get('/moderator','UserController@TestModerator')->name('moderator')->middleware('logged','IsModerator');
+Route::get('/admin','UserController@TestAdmin')->name('admin')->middleware('logged','IsAdmin');
+
+//Test de autenticador
+//Route::get('/admin')
 
 /*
 Usados en el curso que hice, es para guiarme

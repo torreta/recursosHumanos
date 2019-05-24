@@ -14,5 +14,13 @@ class roles_seeder extends Seeder
        DB::table('Roles')->insert([
             'role_name' => 'Candidato'
         ]);
+
+        DB::table('Roles')->insert([
+            'role_name' => 'Admin'
+        ]);
+
+        DB::table('Roles')->insert([
+            'role_name' => 'Moderador'
+        ]);
     }
 }

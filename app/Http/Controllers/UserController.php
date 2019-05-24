@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\UserRole;
 use App\PersonalProfile;
@@ -54,7 +56,7 @@ class UserController extends Controller
     	{
     		$user = new User();
     		$user->email = $request->email;
-    		$user->password = $request->password;
+    		$user->password = Hash::make($request->password);
     		$user->user_status_id = "1";
     		$saved = $user->save();
 
@@ -87,10 +89,26 @@ class UserController extends Controller
     			$curriculum = new Curriculum();
     			$curriculum->candidate_profile_id = $candidate_profile->id;
     			$curriculum->save();
+
+                //Una vez creado el login, autenticamos al usuario. (Esto deberá cambiar si se debe activar por correo el registroa)
+                
+                $userdata = array(
+                  'email' => $request->email ,
+                  'password' => $request->password
+                );
+                
+                if (Auth::attempt($userdata)) 
+                {
+                    return redirect('/');
+                }
+                else
+                {
+                    return redirect('/login');
+                }
     		}
     		else
     		{
-
+                //hay que hacer rollbacks si no se hizo correctamente todos los insert.
     		}
     	}
         
@@ -140,5 +158,71 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function showLogin()
+    {
+        return view('Users.login');
+    }
+
+    public function Login(Request $request)
+    {
+        $remember = false;
+        $validaData = $request->validate([
+            'email' => 'required|e-mail',
+            'password' => 'required|min:8|regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/'
+        ]);
+
+        if ($request->remember_me == 'on')
+        {
+            $remember = true;
+        }
+        // create our user data for the authentication
+        $userdata = array(
+          'email' => $request->email ,
+          'password' => $request->password
+        );
+        // attempt to do the login
+        if (Auth::attempt($userdata, $remember)) 
+        {
+            return view('welcome', [
+            'user_type' => Auth::User()->roles()->orderBy('role_name')->pluck('role_name')/*Auth::User()->roles()->get('role_name')->first()*/
+            ]);
+        }
+        else
+        {
+            // validation not successful, send back to form
+            return redirect('/login');
+        }
+        
+    }
+
+    public function Logout()
+    {
+        Auth::logout(); // logging out user
+        return redirect('/'); // redirection to login screen
+    }
+
+
+    public function TestCandidate()
+    {   
+
+        return view('AuthTest.candidate');
+
+    }
+
+    public function TestAdmin()
+    {   
+
+        return view('AuthTest.admin');
+
+    }
+    
+    public function TestModerator()
+    {   
+
+        return view('AuthTest.mod');
+
     }
 }
