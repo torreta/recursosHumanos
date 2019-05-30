@@ -13,7 +13,7 @@ class CreateEnterprise extends Migration
      */
     public function up()
     {
-        Schema::create('Enterprise', function (Blueprint $table) {
+        Schema::create('Enterprises', function (Blueprint $table) {
             $table->bigIncrements('id')->unique();
             $table->text('name');
             $table->text('description');
@@ -30,6 +30,6 @@ class CreateEnterprise extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Enterprise');
+        Schema::dropIfExists('Enterprises');
     }
 }

@@ -13,7 +13,7 @@ class CreateDirection extends Migration
      */
     public function up()
     {
-        Schema::create('Direction', function (Blueprint $table) {
+        Schema::create('Directions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('enterprise_id')->nullable();
             $table->foreign('enterprise_id')->references('id')->on('Enterprise');
@@ -39,6 +39,6 @@ class CreateDirection extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Direction');
+        Schema::dropIfExists('Directions');
     }
 }

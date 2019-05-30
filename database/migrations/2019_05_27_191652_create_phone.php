@@ -13,7 +13,7 @@ class CreatePhone extends Migration
      */
     public function up()
     {
-        Schema::create('Phone', function (Blueprint $table) {
+        Schema::create('Phones', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('enterprise_id')->nullable();
             $table->foreign('enterprise_id')->references('id')->on('Enterprise');
@@ -33,6 +33,6 @@ class CreatePhone extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Phone');
+        Schema::dropIfExists('Phones');
     }
 }

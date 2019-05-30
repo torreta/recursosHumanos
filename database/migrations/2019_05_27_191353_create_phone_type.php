@@ -13,7 +13,7 @@ class CreatePhoneType extends Migration
      */
     public function up()
     {
-        Schema::create('Phone_Type', function (Blueprint $table) {
+        Schema::create('Phone_Types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name',50)->unique();
         });
@@ -26,6 +26,6 @@ class CreatePhoneType extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Phone_Type');
+        Schema::dropIfExists('Phone_Types');
     }
 }

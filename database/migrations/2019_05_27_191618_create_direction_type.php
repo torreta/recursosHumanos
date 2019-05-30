@@ -13,7 +13,7 @@ class CreateDirectionType extends Migration
      */
     public function up()
     {
-        Schema::create('Direction_Type', function (Blueprint $table) {
+        Schema::create('Direction_Types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name',50)->unique();
         });
@@ -26,6 +26,6 @@ class CreateDirectionType extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Direction_Type');
+        Schema::dropIfExists('Direction_Types');
     }
 }

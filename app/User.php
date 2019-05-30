@@ -35,6 +35,23 @@ class User extends Authenticatable
         return $this->hasOne('App\CandidateProfile');
     }
 
+    public function enterprise()
+    {
+        return $this->belongsToMany('App\Enterprise','Associated_To','user_id','enterprise_id');
+    }
+
+    public function direction()
+    {
+        return $this->hasMany('App\Direction');
+    }
+
+    public function phone()
+    {
+        return $this->hasMany('App\Phone');
+    }
+
+
+
 
 
 

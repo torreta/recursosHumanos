@@ -132,9 +132,56 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id,$type)
     {
-        //
+        if(Auth::Check())
+        {
+            if(Auth::User()->id == $id)
+            {
+                switch ($type) 
+                {
+                    case 'personal':
+                        $direction_type = DB::table('Direction_Type')->whereNotIn('name', ['Empresa'])->value('name');
+                        $phone_type = DB::table('Phone_Type')->value('name');
+                        return view('Users.edit', [
+                               'user_direction_type' => $direction_type,
+                               'user_phone_type' => $phone_type,
+                               'type' => $type,
+                               'id' => $id
+                        ]);
+                        break;
+                    case 'profesional':
+                        $direction_type = DB::table('Direction_Type')->whereNotIn('name', ['Empresa'])->value('name');
+                        $phone_type = DB::table('Phone_Type')->value('name');
+                        return view('Users.edit', [
+                               'user_direction_type' => $direction_type,
+                               'user_phone_type' => $phone_type,
+                               'type' => $type,
+                               'id' => $id
+                        ]);
+                        break;
+                        break;
+                    case 'moderador':
+                        //Codigo de perfil moderador. TODO
+                        break;
+                    case 'admin':
+                        //Codigo de perfil admin. TODO
+                        break;
+                    default:
+                        return redirect('/');
+                }
+            }
+            else
+            {
+                return redirect('/');
+            }
+        }
+        else
+        {
+            return redirect('/');
+        }
+
+
     }
 
     /**
