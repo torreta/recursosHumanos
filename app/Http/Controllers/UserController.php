@@ -141,8 +141,8 @@ class UserController extends Controller
                 switch ($type) 
                 {
                     case 'personal':
-                        $direction_type = DB::table('Direction_Type')->whereNotIn('name', ['Empresa'])->value('name');
-                        $phone_type = DB::table('Phone_Type')->value('name');
+                        $direction_type = DB::table('Direction_Types')->whereNotIn('name', ['Empresa'])->value('name');
+                        $phone_type = DB::table('Phone_Types')->value('name');
                         return view('Users.edit', [
                                'user_direction_type' => $direction_type,
                                'user_phone_type' => $phone_type,
@@ -151,8 +151,8 @@ class UserController extends Controller
                         ]);
                         break;
                     case 'profesional':
-                        $direction_type = DB::table('Direction_Type')->whereNotIn('name', ['Empresa'])->value('name');
-                        $phone_type = DB::table('Phone_Type')->value('name');
+                        $direction_type = DB::table('Direction_Types')->whereNotIn('name', ['Empresa'])->value('name');
+                        $phone_type = DB::table('Phone_Types')->value('name');
                         return view('Users.edit', [
                                'user_direction_type' => $direction_type,
                                'user_phone_type' => $phone_type,
