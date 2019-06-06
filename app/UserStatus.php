@@ -10,4 +10,6 @@ class UserStatus extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    protected $table = 'User_Status';
 }

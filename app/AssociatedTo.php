@@ -15,4 +15,6 @@ class AssociatedTo extends Model
     {
         return $this->belongsTo('App\Enterprise');
     }
+
+    protected $table = 'Associated_To';
 }

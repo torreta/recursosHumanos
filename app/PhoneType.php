@@ -10,4 +10,6 @@ class PhoneType extends Model
     {
         return $this->hasMany('App\Phone');
     }
+
+    protected $table = 'Phone_Types';
 }

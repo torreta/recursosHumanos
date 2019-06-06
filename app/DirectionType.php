@@ -10,4 +10,6 @@ class DirectionType extends Model
     {
         return $this->hasMany('App\Direction');
     }
+
+    protected $table = 'Direction_Types';
 }

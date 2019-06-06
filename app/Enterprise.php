@@ -20,4 +20,6 @@ class Enterprise extends Model
     {
         return $this->hasMany('App\Phone');
     }
+
+    protected $table = 'Enterprises';
 }

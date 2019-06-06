@@ -20,4 +20,6 @@ class Direction extends Model
     {
         return $this->belongsTo('App\DirectionType');
     }
+
+    protected $table = 'Directions';
 }

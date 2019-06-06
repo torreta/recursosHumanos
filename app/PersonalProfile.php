@@ -10,4 +10,6 @@ class PersonalProfile extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    protected $table = 'Personal_Profiles';
 }

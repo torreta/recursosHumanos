@@ -10,4 +10,6 @@ class WorkExperience extends Model
     {
         return $this->belongsTo('App\Curriculum');
     }
+
+    protected $table = 'Work_Experiences';
 }

@@ -10,4 +10,5 @@ class IdentificationType extends Model
     {
         return $this->hasMany('App\CandidateProfile');
     }
+    protected $table = 'Identification_Types';
 }

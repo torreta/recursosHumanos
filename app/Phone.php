@@ -20,4 +20,6 @@ class Phone extends Model
     {
         return $this->belongsTo('App\PhoneType');
     }
+
+    protected $table = 'Phones';
 }

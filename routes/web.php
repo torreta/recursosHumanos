@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('/register', 'UserController@Index')->name('register.index');
 Route::post('/register', 'UserController@Store')->name('register.store');
-Route::post('/register/create', 'UserController@Create')->name('register.create');
+Route::get('/register/create', 'UserController@Create')->name('register.create');
 Route::get('/user/{id}/edit/{edit_type}', 'UserController@edit')->name('register.edit');
 
 //Authentication

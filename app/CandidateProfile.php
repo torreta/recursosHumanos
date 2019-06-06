@@ -20,4 +20,6 @@ class CandidateProfile extends Model
     {
         return $this->hasOne('App\Curriculum');
     }
+
+    protected $table = 'Candidate_Profiles';
 }
