@@ -141,13 +141,23 @@ class UserController extends Controller
                 switch ($type) 
                 {
                     case 'personal':
+
                         $direction_type = DB::table('Direction_Types')->whereNotIn('name', ['Empresa'])->value('name');
                         $phone_type = DB::table('Phone_Types')->value('name');
+                        $personal_data = Auth::User()->personal_profile()->select(array('first_name', 'last_name'))->get();
+                        $cedula = Auth::User()->candidate_profile()->select('identification_number')->get();
+                        $directions = Auth::User()->direction()->select(array('id', 'country','adress_line_1',
+                            'adress_line_2','city','state','reference','postal_code','direction_type_id'))->get();
+                        $phones = Auth::User()->phone()->select('phone_number','phone_type_id')->get();
+                        dd($phones);
+                        //dd($personal_data[0]->last_name);
+
                         return view('Users.edit', [
                                'user_direction_type' => $direction_type,
                                'user_phone_type' => $phone_type,
                                'type' => $type,
-                               'id' => $id
+                               'id' => $id,
+                               'personal_data' => $personal_data
                         ]);
                         break;
                     case 'profesional':
