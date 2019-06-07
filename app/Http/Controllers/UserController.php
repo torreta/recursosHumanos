@@ -11,6 +11,11 @@ use App\PersonalProfile;
 use App\CandidateProfile;
 use App\IdentificationType;
 use App\Curriculum;
+use App\State;
+use App\Phone;
+use App\PhoneType;
+use App\Direction;
+use App\DirectionType;
 
 class UserController extends Controller
 {
@@ -142,22 +147,27 @@ class UserController extends Controller
                 {
                     case 'personal':
 
-                        $direction_type = DB::table('Direction_Types')->whereNotIn('name', ['Empresa'])->value('name');
-                        $phone_type = DB::table('Phone_Types')->value('name');
+                        $direction_type = DB::table('Direction_Types')->whereNotIn('name', ['Empresa'])->get();
+                        $phone_type = DB::table('Phone_Types')->get();
                         $personal_data = Auth::User()->personal_profile()->select(array('first_name', 'last_name'))->get();
-                        $cedula = Auth::User()->candidate_profile()->select('identification_number')->get();
+                        $id_number = Auth::User()->candidate_profile()->select('identification_number')->get();
                         $directions = Auth::User()->direction()->select(array('id', 'country','adress_line_1',
                             'adress_line_2','city','state','reference','postal_code','direction_type_id'))->get();
                         $phones = Auth::User()->phone()->select('phone_number','phone_type_id')->get();
-                        dd($phones);
+                        $states = DB::table('States')->get();
                         //dd($personal_data[0]->last_name);
-
+                           // dd($direction_type);
                         return view('Users.edit', [
-                               'user_direction_type' => $direction_type,
-                               'user_phone_type' => $phone_type,
+                               'personal_data' => $personal_data,
+                               'identification_number' => $id_number,
+                               'directions' => $directions,
+                               'phones' => $phones,
+                               'user_direction_types' => $direction_type,
+                               'user_phone_types' => $phone_type,
                                'type' => $type,
                                'id' => $id,
-                               'personal_data' => $personal_data
+                               'states' => $states
+                               
                         ]);
                         break;
                     case 'profesional':
@@ -203,7 +213,58 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //Actualizamos el cliente. Nota: save no hace nada si no hay cambios
+        $personal_data = new PersonalProfile();
+        $personal_data = PersonalProfile::where('user_id',Auth::User()->id)->first();
+        $personal_data->first_name=$request->first_name;
+        $personal_data->last_name=$request->last_name;
+        $personal_data->save();
+
+        //Actualizamos/Insertamos los teléfonos
+        for ($i = 0; $i < count($request->id_phone); $i++)
+        {
+            if ($request->id_phone[$i] == 0)
+            {
+                if ($request->phone[$i] != null)
+                {
+                    $phone = new Phone();  
+                    $phone->user_id = Auth::User()->value('id');
+                    $phone->phone_number = $request->phone[$i];
+                    $p_type_id = PhoneType::where('name',$request->user_phone_type[$i])->first('id')->id;
+                    $phone->phone_type_id = $p_type_id;
+                    $phone->save();
+                }
+            }
+        }
+
+        //Actualizamos/insertamos las direcciones
+        for ($i = 0; $i < count($request->id_direction); $i++)
+        {
+            if ($request->id_direction[$i] == 0)
+            {
+                if ($request->country[$i] != null && $request->line1[$i] != null && $request->line2[$i] != null
+                && $request->city[$i] != null && $request->state[$i] != null && $request->reference[$i] != null) 
+                {
+                    $direction = new Direction();  
+                    $direction->user_id = Auth::User()->value('id');
+                    $direction->country = $request->country[$i];
+                    $direction->adress_line_1 = $request->line1[$i];
+                    $direction->adress_line_2 = $request->line2[$i];
+                    $direction->city = $request->city[$i];
+                    $direction->state = $request->state[$i];
+                    $direction->reference = $request->reference[$i];
+                    $direction->postal_code = $request->postal[$i];
+                    $d_type_id = DirectionType::where('name',$request->user_direction_type[$i])->first('id')->id;
+                    $direction->direction_type_id = $d_type_id;
+                    $direction->save();
+                }
+            }            
+        }
+
+        //¿Volver a editar o inicio? En fin lo mandare al inicio mientras
+        return redirect('/');
+        //dd($request);
+
     }
 
     /**

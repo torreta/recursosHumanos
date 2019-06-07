@@ -34,7 +34,7 @@
                             </div> 
                         @endif
                         @if($type == 'personal')
-                        <form action="/register/" method="POST">
+                        <form action="/user/{{$id}}/edit" method="POST">
                             @csrf
                             <div class="card" >
                                 <div class="card-body">
@@ -42,11 +42,11 @@
                                     <div class="form-group">
 
                                         <label for="title">Nombre:</label>
-                                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Nombre" value="{{old('first_name')}}">
+                                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Nombre" value="{{$personal_data[0]->first_name}}">
                                         <label for="title">Apellido:</label>
-                                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Apellido" value="{{old('last_name')}}">
+                                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Apellido" value="{{$personal_data[0]->last_name}}">
                                         <label for="title">Cédula de Identidad:</label>
-                                        <input type="text" class="form-control-plaintext" id="identification_number" name="identification_number" placeholder="Cédula de Identidad" value="{{old('identification_number')}}" readonly>
+                                        <input type="text" class="form-control-plaintext" id="identification_number" name="identification_number" placeholder="Cédula de Identidad" value="{{$identification_number[0]->identification_number}}" readonly>
                                     </div>
                                 </div>
                             </div><br>
@@ -54,48 +54,64 @@
                                 <div class="card-body">
                                     <h2 class="card-title">Dirección</H2>
                                     <div class="form-group">
-                                        <div class="clonable-block" data-toggle="cloner">
+                                        <div class="clonable-block" data-toggle="cloner" data-options='{"clearValueOnClone":false}'>
                                           <div class="clonable" data-ss="1">
-                                            <h5 class="clonable-increment-html">Nueva Dirección</h5>
+                                            <div class='row'>
+                                                <div class='col-11'>
+                                                    <h5 class="clonable-increment-html">Nueva Dirección</h5>
+                                                </div>
+                                                <div class='col-1'>
+                                                    <button type="button" class="btn btn-danger clonable-button-close" style="display: none;">X</button>
+                                                </div>
+                                            </div>
                                                 <div class="form-row">
                                                    <div class="form-group col-md-6">
-                                                      <label>Tipo de Dirección:</label>
-                                                        <select class="form-control" id="user_direction_type" name="user_direction_type">
-
+                                                      <input type="text" class="form-control" id="id_direction" name="id_direction[]" value="0" hidden>
+                                                      <label>Tipo de Dirección</label>
+                                                        <select class="form-control" id="user_direction_type" name="user_direction_type[]">
+                                                            @foreach ($user_direction_types as $user_direction_type)
+                                                                <option value="{{ $user_direction_type->name }}">{{ $user_direction_type->name}}</option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="form-group col-md-6">
-                                                      <label >Password</label>
-                                                      <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                                                      <label >País</label>
+                                                      <input type="text" class="form-control" id="country" name="country[]" placeholder="País">
                                                     </div>
                                                   </div>
+
                                                   <div class="form-group">
                                                     <label >Dirección 1</label>
-                                                    <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                                                    <input type="text" class="form-control" id="line1" name="line1[]" placeholder="Avenida, calle, etc.">
                                                   </div>
                                                   <div class="form-group">
                                                     <label >Dirección 2</label>
-                                                    <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                                                    <input type="text" class="form-control" id="line2" name="line2[]" placeholder="Apartamento, casa, oficina, piso, etc.">
+                                                  </div>
+                                                  <div class="form-group">
+                                                    <label >Punto de Referencia</label>
+                                                    <input type="text" class="form-control" id="reference" name="reference[]" placeholder="Punto de referencia">
                                                   </div>
                                                   <div class="form-row">
                                                     <div class="form-group col-md-6">
                                                       <label >Ciudad</label>
-                                                      <input type="text" class="form-control" id="inputCity">
+                                                      <input type="text" class="form-control" id="city" name="city[]" placeholder="Ciudad">
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                       <label >Estado</label>
-                                                      <select id="inputState" class="form-control">
-                                                        <option selected>Choose...</option>
-                                                        <option>...</option>
+                                                      <select class="form-control" id="state" name="state[]">
+                                                            @foreach ($states as $state)
+                                                                <option value="{{ $state->name }}">{{ $state->name}}</option>
+                                                            @endforeach
                                                       </select>
                                                     </div>
                                                     <div class="form-group col-md-2">
-                                                      <label for="inputZip">Código Postal</label>
-                                                      <input type="text" class="form-control" id="inputZip">
+                                                      <label for="postal">Código Postal</label>
+                                                      <input type="text" class="form-control" id="postal" name="postal[]" placeholder="Código Postal">
                                                     </div>
                                                 </div>
                                           </div>
-                                          <button class="clonable-button-add" type="button">Añadir Dirección</button>
+                                          <button class="clonable-button-add" type="button">Añadir otra dirección</button>
                                         </div>
                                     </div>
                                 </div>
@@ -104,23 +120,33 @@
                                 <div class="card-body">
                                     <h2 class="card-title">Teléfono</H2>
                                     <div class="form-group">
-                                        <div class="clonable-block" data-toggle="cloner">
+                                        <div class="clonable-block" data-toggle="cloner" data-options='{"clearValueOnClone":false}'>
                                           <div class="clonable" data-ss="1">
-                                            <h5 class="clonable-increment-html">Nuevo Teléfono</h5>
+                                            <div class='row'>
+                                                <div class='col-11'>
+                                                    <h5 class="clonable-increment-html">Nuevo Teléfono</h5>
+                                                </div>
+                                                <div class='col-1'>
+                                                    <button type="button" class="btn btn-danger clonable-button-close" style="display: none;">X</button>
+                                                </div>
+                                            </div>
                                                 <div class="form-row">
+                                                    <input type="text" class="form-control" id="id_phone" name="id_phone[]" value="0" hidden>
                                                    <div class="form-group col-md-6">
                                                       <label>Tipo de Teléfono:</label>
-                                                        <select class="form-control" id="user_phone_type" name="user_direction_type">
-
+                                                        <select class="form-control" id="user_phone_type" name="user_phone_type[]">
+                                                            @foreach ($user_phone_types as $user_phone_type)
+                                                                <option value="{{ $user_phone_type->name }}">{{ $user_phone_type->name}}</option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                       <label >Número de Teléfono</label>
-                                                      <input type="text" class="form-control" id="" placeholder="Teléfono">
+                                                      <input type="text" class="form-control" id="phone" name="phone[]" placeholder="Teléfono">
                                                     </div>
                                                   </div>
                                           </div>
-                                          <button class="clonable-button-add" type="button">Añadir Teléfono</button>
+                                          <button class="clonable-button-add" type="button">Añadir otro teléfono</button>
                                         </div>
                                     </div>
                                 </div>
