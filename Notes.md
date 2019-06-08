@@ -65,3 +65,7 @@ required:
 
 ------CAMBIAR EL IDIOMA DE LA APLICACIÓN------------
 https://styde.net/como-usar-el-componente-de-traducciones-de-laravel/  
+
+
+---------------Colocar TEma
+https://www.youtube.com/watch?v=McW-OgjQl4k
