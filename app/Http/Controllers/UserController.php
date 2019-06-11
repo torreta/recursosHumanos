@@ -16,6 +16,10 @@ use App\Phone;
 use App\PhoneType;
 use App\Direction;
 use App\DirectionType;
+use App\WorkExperience;
+use App\Skill;
+use App\PersonalReference;
+use App\Certificate;
 
 class UserController extends Controller
 {
@@ -219,84 +223,203 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         /*NOTA: save no hace nada si no hay cambios*/
-
-        //Actualizamos el cliente. 
-        $personal_data = new PersonalProfile();
-        $personal_data = PersonalProfile::where('user_id',Auth::User()->id)->first();
-        $personal_data->first_name=$request->first_name;
-        $personal_data->last_name=$request->last_name;
-        $personal_data->save();
-
-        //Actualizamos/Insertamos los teléfonos
-        for ($i = 0; $i < count($request->id_phone); $i++)
+        $source = $request->session()->get('_previous');
+        $source_split = explode('/',$source["url"]);
+        $edit_type = end($source_split);
+        if ($edit_type == 'personal')
         {
-            if ($request->id_phone[$i] == 0)
+            //Actualizamos el cliente. 
+            $personal_data = new PersonalProfile();
+            $personal_data = PersonalProfile::where('user_id',Auth::User()->id)->first();
+            $personal_data->first_name=$request->first_name;
+            $personal_data->last_name=$request->last_name;
+            $personal_data->save();
+
+            //Actualizamos/Insertamos los teléfonos
+            for ($i = 0; $i < count($request->id_phone); $i++)
             {
-                if ($request->phone[$i] != null)
+                if ($request->id_phone[$i] == 0)
                 {
-                    $phone = new Phone();  
-                    $phone->user_id = Auth::User()->id;
-                    $phone->phone_number = $request->phone[$i];
-                    $p_type_id = PhoneType::where('name',$request->user_phone_type[$i])->first('id')->id;
-                    $phone->phone_type_id = $p_type_id;
-                    $phone->save();
+                    if ($request->phone[$i] != null)
+                    {
+                        $phone = new Phone();  
+                        $phone->user_id = Auth::User()->id;
+                        $phone->phone_number = $request->phone[$i];
+                        $p_type_id = PhoneType::where('name',$request->user_phone_type[$i])->first('id')->id;
+                        $phone->phone_type_id = $p_type_id;
+                        $phone->save();
+                    }
+                }
+                else
+                {
+                    if ($request->phone[$i] != null)
+                    {
+                        $phone = Phone::where('id',$request->id_phone[$i])->first();
+                        $phone->phone_number = $request->phone[$i];
+                        $p_type_id = PhoneType::where('name',$request->user_phone_type[$i])->first('id')->id;
+                        $phone->phone_type_id = $p_type_id;
+                        $phone->save();
+                    }
                 }
             }
-            else
+
+            //Actualizamos/insertamos las direcciones
+            for ($i = 0; $i < count($request->id_direction); $i++)
             {
-                if ($request->phone[$i] != null)
+                if ($request->id_direction[$i] == 0)
                 {
-                    $phone = Phone::where('id',$request->id_phone[$i])->first();
-                    $phone->phone_number = $request->phone[$i];
-                    $p_type_id = PhoneType::where('name',$request->user_phone_type[$i])->first('id')->id;
-                    $phone->phone_type_id = $p_type_id;
-                    $phone->save();
-                }
+                    if ($request->country[$i] != null && $request->line1[$i] != null && $request->line2[$i] != null
+                    && $request->city[$i] != null && $request->state[$i] != null && $request->reference[$i] != null) 
+                    {
+                        $direction = new Direction();  
+                        $direction->user_id = Auth::User()->id;
+                        $direction->country = $request->country[$i];
+                        $direction->adress_line_1 = $request->line1[$i];
+                        $direction->adress_line_2 = $request->line2[$i];
+                        $direction->city = $request->city[$i];
+                        $direction->state = $request->state[$i];
+                        $direction->reference = $request->reference[$i];
+                        $direction->postal_code = $request->postal[$i];
+                        $d_type_id = DirectionType::where('name',$request->user_direction_type[$i])->first('id')->id;
+                        $direction->direction_type_id = $d_type_id;
+                        $direction->save();
+                    }
+                } 
+                else
+                {
+                    if ($request->country[$i] != null && $request->line1[$i] != null && $request->line2[$i] != null
+                    && $request->city[$i] != null && $request->state[$i] != null && $request->reference[$i] != null) 
+                    {
+                        $direction = Direction::where('id',$request->id_direction[$i])->first();
+                        $direction->country = $request->country[$i];
+                        $direction->adress_line_1 = $request->line1[$i];
+                        $direction->adress_line_2 = $request->line2[$i];
+                        $direction->city = $request->city[$i];
+                        $direction->state = $request->state[$i];
+                        $direction->reference = $request->reference[$i];
+                        $direction->postal_code = $request->postal[$i];
+                        $d_type_id = DirectionType::where('name',$request->user_direction_type[$i])->first('id')->id;
+                        $direction->direction_type_id = $d_type_id;
+                        $direction->save();                    
+                    }
+                }           
             }
         }
 
-        //Actualizamos/insertamos las direcciones
-        for ($i = 0; $i < count($request->id_direction); $i++)
+        if ($edit_type == 'profesional')
         {
-            if ($request->id_direction[$i] == 0)
+            $curriculum_id = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->id;
+            //Actualizamos/Insertamos las experiencias personales
+            for ($i = 0; $i < count($request->id_experience); $i++)
             {
-                if ($request->country[$i] != null && $request->line1[$i] != null && $request->line2[$i] != null
-                && $request->city[$i] != null && $request->state[$i] != null && $request->reference[$i] != null) 
+                if ($request->id_experience[$i] == 0)
                 {
-                    $direction = new Direction();  
-                    $direction->user_id = Auth::User()->id;
-                    $direction->country = $request->country[$i];
-                    $direction->adress_line_1 = $request->line1[$i];
-                    $direction->adress_line_2 = $request->line2[$i];
-                    $direction->city = $request->city[$i];
-                    $direction->state = $request->state[$i];
-                    $direction->reference = $request->reference[$i];
-                    $direction->postal_code = $request->postal[$i];
-                    $d_type_id = DirectionType::where('name',$request->user_direction_type[$i])->first('id')->id;
-                    $direction->direction_type_id = $d_type_id;
-                    $direction->save();
+                    if ($request->name_experience[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $experience = new WorkExperience();  
+                        $experience->curriculum_id = $curriculum_id;
+                        $experience->name = $request->name_experience[$i];
+                        $experience->description = $request->description_experience[$i];
+                        $experience->time = $request->experience_time[$i];
+                        $experience->save();
+                    }
+                }
+                else
+                {
+                    if ($request->name_experience[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $experience = WorkExperience::where('id',$request->id_experience[$i])->first();
+                        $experience->name = $request->name_experience[$i];
+                        $experience->description = $request->description_experience[$i];
+                        $experience->time = $request->experience_time[$i];
+                        $experience->save();
+                    }
+                }
+            }  
+
+            //Actualizamos/Insertamos las habilidades profesionales
+            for ($i = 0; $i < count($request->id_skill); $i++)
+            {
+                if ($request->id_skill[$i] == 0)
+                {
+                    if ($request->name_skill[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $skill = new Skill();  
+                        $skill->curriculum_id = $curriculum_id;
+                        $skill->name = $request->name_skill[$i];
+                        $skill->description = $request->description_skill[$i];
+                        $skill->save();
+                    }
+                }
+                else
+                {
+                    if ($request->name_skill[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $skill = Skill::where('id',$request->id_skill[$i])->first();
+                        $skill->name = $request->name_skill[$i];
+                        $skill->description = $request->description_skill[$i];
+                        $skill->save();
+                    }
+                }
+            }   
+
+            //Actualizamos/Insertamos los certificados
+            for ($i = 0; $i < count($request->id_certificate); $i++)
+            {
+                if ($request->id_certificate[$i] == 0)
+                {
+                    if ($request->name_certificate[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $certificate = new Certificate();  
+                        $certificate->curriculum_id = $curriculum_id;
+                        $certificate->name = $request->name_certificate[$i];
+                        $certificate->description = $request->description_certificate[$i];
+                        $certificate->certificate_year = $request->year[$i];
+                        $certificate->save();
+                    }
+                }
+                else
+                {
+                    if ($request->name_certificate[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $certificate = Certificate::where('id',$request->id_certificate[$i])->first();
+                        $certificate->name = $request->name_certificate[$i];
+                        $certificate->description = $request->description_certificate[$i];
+                        $certificate->certificate_year = $request->year[$i];
+                        $certificate->save();
+                    }
+                }
+            }  
+
+            //Actualizamos/Insertamos las referencias personales
+            for ($i = 0; $i < count($request->id_reference); $i++)
+            {
+                if ($request->id_reference[$i] == 0)
+                {
+                    if ($request->name_reference[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $reference = new PersonalReference();  
+                        $reference->curriculum_id = $curriculum_id;
+                        $reference->name = $request->name_reference[$i];
+                        $reference->relation = $request->relation[$i];
+                        $reference->phone_number = $request->phone_reference[$i];
+                        $reference->save();
+                    }
+                }
+                else
+                {
+                    if ($request->name_certificate[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $certificate = PersonalReference::where('id',$request->id_reference[$i])->first();
+                        $reference->name = $request->name_reference[$i];
+                        $reference->relation = $request->relation[$i];
+                        $reference->phone_number = $request->phone_reference[$i];
+                        $reference->save();
+                    }
                 }
             } 
-            else
-            {
-                if ($request->country[$i] != null && $request->line1[$i] != null && $request->line2[$i] != null
-                && $request->city[$i] != null && $request->state[$i] != null && $request->reference[$i] != null) 
-                {
-                    $direction = Direction::where('id',$request->id_direction[$i])->first();
-                    $direction->country = $request->country[$i];
-                    $direction->adress_line_1 = $request->line1[$i];
-                    $direction->adress_line_2 = $request->line2[$i];
-                    $direction->city = $request->city[$i];
-                    $direction->state = $request->state[$i];
-                    $direction->reference = $request->reference[$i];
-                    $direction->postal_code = $request->postal[$i];
-                    $d_type_id = DirectionType::where('name',$request->user_direction_type[$i])->first('id')->id;
-                    $direction->direction_type_id = $d_type_id;
-                    $direction->save();                    
-                }
-            }           
-        }
 
+        }
         //¿Volver a editar o inicio? En fin lo mandare al inicio mientras
         return redirect('/');
         //dd($request);
