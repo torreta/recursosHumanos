@@ -4,7 +4,7 @@
 @section('content')
 <!--
 TODO:
-Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese clon...ARREGLAR
+EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
 
 -->
         <div class="row">
@@ -19,7 +19,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                     @if((Auth::User()->roles()->find('3') != NULL))
                     <li class="list-group-item"><a href="/user/{{$id}}/edit/moderador">Perfil Moderador</a></li>
                     @endif
-                    @if((Auth::User()->roles()->find('3') != NULL))
+                    @if((Auth::User()->roles()->find('2') != NULL))
                     <li class="list-group-item"><a href="/user/{{$id}}/edit/admin">Perfil Administrativo</a></li>
                     @endif
                   </ul>
@@ -129,7 +129,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
 
 
                                     <div class="form-group">
-                                        <div class="clonable-block" data-toggle="cloner" data-options='{"clearValueOnClone":false}'>
+                                        <div class="clonable-block" data-toggle="cloner" >
                                           <div class="clonable" data-ss="1" id="delete">
                                             <div class='row'>
                                                 <div class='col-11'>
@@ -141,7 +141,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                             </div>
                                                 <div class="form-row">
                                                    <div class="form-group col-md-6">
-                                                      <input type="text" class="form-control" id="id_direction" name="id_direction[]" value="0" hidden>
+                                                      <input type="text" class="form-control" id="id_direction" name="id_direction[]"  hidden>
                                                       <label>Tipo de Dirección</label>
                                                         <select class="form-control" id="user_direction_type" name="user_direction_type[]">
                                                             @foreach ($user_direction_types as $user_direction_type)
@@ -224,7 +224,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                     @endforeach
 
                                     <div class="form-group">
-                                        <div class="clonable-block" data-toggle="cloner" data-options='{"clearValueOnClone":false}'>
+                                        <div class="clonable-block" data-toggle="cloner" >
                                           <div class="clonable" data-ss="1">
                                             <div class='row'>
                                                 <div class='col-11'>
@@ -235,7 +235,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                                 </div>
                                             </div>
                                                 <div class="form-row">
-                                                    <input type="text" class="form-control" id="id_phone" name="id_phone[]" value="0" hidden>
+                                                    <input type="text" class="form-control" id="id_phone" name="id_phone[]"  hidden>
                                                    <div class="form-group col-md-6">
                                                       <label>Tipo de Teléfono:</label>
                                                         <select class="form-control" id="user_phone_type" name="user_phone_type[]">
@@ -293,7 +293,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
 
 
                                     <div class="form-group">
-                                        <div class="clonable-block" data-toggle="cloner" data-options='{"clearValueOnClone":false}'>
+                                        <div class="clonable-block" data-toggle="cloner">
                                           <div class="clonable" data-ss="1" >
                                             <div class='row'>
                                                 <div class='col-11'>
@@ -305,7 +305,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                             </div>
                                                 <div class="form-group">
                                                     <div class="form-row">
-                                                    <input type="text" class="form-control" id="id_experience" name="id_experience[]" value="0" hidden>
+                                                    <input type="text" class="form-control" id="id_experience" name="id_experience[]"  hidden>
                                                         <div class="form-group col-md-9">
                                                             <label for="title">Experiencia:</label>
                                                             <input type="text" class="form-control" id="name_experience" name="name_experience[]" placeholder="Nombre de la Experiencia Profesional" value="{{old('name_experience[]')}}">
@@ -317,7 +317,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                                         </div>
                                                     </div>
                                                     <label for="title">Descripción:</label>
-                                                    <textarea class="form-control" rows="4" cols="50" id="description_experience" name="description_experience[]" placeholder="Descripción de la experiencia profesional" value="{{old('description_experience[]')}}"></textarea>
+                                                    <textarea class="form-control" rows="4" cols="50" id="description_experience" name="description_experience[]" placeholder="Descripción de la experiencia profesional">{{old('description_experience[]')}}</textarea>
                                                 </div>
                                           </div>
                                           <button class="clonable-button-add" type="button">Añadir Experiencia</button>
@@ -339,14 +339,14 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                         <label for="title">Habilidad:</label>
                                         <input type="text" class="form-control" id="name_skill" name="name_skill[]" placeholder="Nombre de la Habilidad" value="{{$skill->name}}">
                                         <label for="title">Descripción:</label>
-                                        <textarea class="form-control" rows="4" cols="50" id="description_skill" name="description_skill[]" placeholder="Descripción de la Experiencia" value="{{$skill->description}}"></textarea>
+                                        <textarea class="form-control" rows="4" cols="50" id="description_skill" name="description_skill[]" placeholder="Descripción de la Experiencia">{{$skill->description}}</textarea>
                                     </div>                                    
                                     <br>
 
                                     @endforeach
 
                                     <div class="form-group">
-                                        <div class="clonable-block" data-toggle="cloner" data-options='{"clearValueOnClone":false}'>
+                                        <div class="clonable-block" data-toggle="cloner" >
                                           <div class="clonable" data-ss="1">
                                             <div class='row'>
                                                 <div class='col-11'>
@@ -357,11 +357,11 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                                 </div>
                                             </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="id_skill" name="id_skill[]" value="0" hidden>
+                                                    <input type="text" class="form-control" id="id_skill" name="id_skill[]"  hidden>
                                                     <label for="title">Habilidad:</label>
                                                     <input type="text" class="form-control" id="name_skill" name="name_skill[]" placeholder="Nombre de la Habilidad" value="{{old('name_skill[]')}}">
                                                     <label for="title">Descripción:</label>
-                                                    <textarea class="form-control" rows="4" cols="50" id="description_skill" name="description_skill[]" placeholder="Descripción de la Habilidad" value="{{old('description_skill[]')}}"></textarea>
+                                                    <textarea class="form-control" rows="4" cols="50" id="description_skill" name="description_skill[]" placeholder="Descripción de la Habilidad" >{{old('description_skill[]')}}</textarea>
                                                 </div>
                                           </div>
                                           <button class="clonable-button-add" type="button">Añadir Habilidad</button>
@@ -391,14 +391,14 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                             </div>
                                         </div>
                                             <label for="title">Descripción:</label>
-                                            <textarea class="form-control" rows="4" cols="50" id="description_certificate" name="description_certificate[]" placeholder="Descripción del Certificado" value="{{$certificate->description}}"></textarea>
+                                            <textarea class="form-control" rows="4" cols="50" id="description_certificate" name="description_certificate[]" placeholder="Descripción del Certificado" >{{$certificate->description}}</textarea>
                                         </div>                                 
                                     <br>
 
                                     @endforeach
 
                                     <div class="form-group">
-                                        <div class="clonable-block" data-toggle="cloner" data-options='{"clearValueOnClone":false}'>
+                                        <div class="clonable-block" data-toggle="cloner" >
                                           <div class="clonable" data-ss="1">
                                             <div class='row'>
                                                 <div class='col-11'>
@@ -409,7 +409,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                                 </div>
                                             </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="id_certificate" name="id_certificate[]" value="0" hidden>
+                                                    <input type="text" class="form-control" id="id_certificate" name="id_certificate[]" hidden>
                                                     <div class="form-row">
                                                         <div class="form-group col-md-9">
                                                             <label for="title">Titulo del Certificado:</label>
@@ -422,7 +422,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                                         </div>
                                                     </div>
                                                     <label for="title">Descripción:</label>
-                                                    <textarea class="form-control" rows="4" cols="50" id="description_certificate" name="description_certificate[]" placeholder="Descripción del Certificado" value="{{old('description_certificate[]')}}"></textarea>
+                                                    <textarea class="form-control" rows="4" cols="50" id="description_certificate" name="description_certificate[]" placeholder="Descripción del Certificado">{{old('description_certificate[]')}}</textarea>
                                                 </div>
                                           </div>
                                           <button class="clonable-button-add" type="button">Añadir Certificado</button>
@@ -460,7 +460,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
 
 
                                     <div class="form-group">
-                                        <div class="clonable-block" data-toggle="cloner" data-options='{"clearValueOnClone":false}'>
+                                        <div class="clonable-block" data-toggle="cloner">
                                           <div class="clonable" data-ss="1">
                                             <div class='row'>
                                                 <div class='col-11'>
@@ -471,7 +471,7 @@ Clonar los id ocultos ocasiona que tambien se clone los campos restantes de ese 
                                                 </div>
                                             </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="id_reference" name="id_reference[]" value="0" hidden>
+                                                    <input type="text" class="form-control" id="id_reference" name="id_reference[]" hidden>
                                                     <div class="form-row">
                                                         <div class="form-group col-md-6">
                                                             <label for="title">Nombre:</label>

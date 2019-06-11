@@ -238,7 +238,7 @@ class UserController extends Controller
             //Actualizamos/Insertamos los teléfonos
             for ($i = 0; $i < count($request->id_phone); $i++)
             {
-                if ($request->id_phone[$i] == 0)
+                if ($request->id_phone[$i] == null)
                 {
                     if ($request->phone[$i] != null)
                     {
@@ -266,7 +266,7 @@ class UserController extends Controller
             //Actualizamos/insertamos las direcciones
             for ($i = 0; $i < count($request->id_direction); $i++)
             {
-                if ($request->id_direction[$i] == 0)
+                if ($request->id_direction[$i] == null)
                 {
                     if ($request->country[$i] != null && $request->line1[$i] != null && $request->line2[$i] != null
                     && $request->city[$i] != null && $request->state[$i] != null && $request->reference[$i] != null) 
@@ -312,7 +312,7 @@ class UserController extends Controller
             //Actualizamos/Insertamos las experiencias personales
             for ($i = 0; $i < count($request->id_experience); $i++)
             {
-                if ($request->id_experience[$i] == 0)
+                if ($request->id_experience[$i] == null)
                 {
                     if ($request->name_experience[$i] != null)//REVISAR tag:campos_no_nulls
                     {
@@ -340,7 +340,7 @@ class UserController extends Controller
             //Actualizamos/Insertamos las habilidades profesionales
             for ($i = 0; $i < count($request->id_skill); $i++)
             {
-                if ($request->id_skill[$i] == 0)
+                if ($request->id_skill[$i] == null)
                 {
                     if ($request->name_skill[$i] != null)//REVISAR tag:campos_no_nulls
                     {
@@ -366,7 +366,7 @@ class UserController extends Controller
             //Actualizamos/Insertamos los certificados
             for ($i = 0; $i < count($request->id_certificate); $i++)
             {
-                if ($request->id_certificate[$i] == 0)
+                if ($request->id_certificate[$i] == null)
                 {
                     if ($request->name_certificate[$i] != null)//REVISAR tag:campos_no_nulls
                     {
@@ -394,7 +394,7 @@ class UserController extends Controller
             //Actualizamos/Insertamos las referencias personales
             for ($i = 0; $i < count($request->id_reference); $i++)
             {
-                if ($request->id_reference[$i] == 0)
+                if ($request->id_reference[$i] == null)
                 {
                     if ($request->name_reference[$i] != null)//REVISAR tag:campos_no_nulls
                     {
@@ -408,9 +408,9 @@ class UserController extends Controller
                 }
                 else
                 {
-                    if ($request->name_certificate[$i] != null)//REVISAR tag:campos_no_nulls
+                    if ($request->name_reference[$i] != null)//REVISAR tag:campos_no_nulls
                     {
-                        $certificate = PersonalReference::where('id',$request->id_reference[$i])->first();
+                        $reference = PersonalReference::where('id',$request->id_reference[$i])->first();
                         $reference->name = $request->name_reference[$i];
                         $reference->relation = $request->relation[$i];
                         $reference->phone_number = $request->phone_reference[$i];
