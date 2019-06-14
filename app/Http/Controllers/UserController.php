@@ -55,8 +55,8 @@ class UserController extends Controller
             'email' => 'required|e-mail|unique:Users,email',
             'password' => 'required|min:8|confirmed|regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/',
             'identification_number' => 'required|integer|unique:Candidate_Profiles,identification_number',
-            'first_name' => 'required|min:3|regex:/^[a-zA-Z]*$/',
-            'last_name' => 'required|min:3|regex:/^[a-zA-Z]*$/'
+            'first_name' => 'required|min:3|regex:/^[a-zA-Z ]*$/',
+            'last_name' => 'required|min:3|regex:/^[a-zA-Z ]*$/'
         ]);
 
     	$check_user = DB::table('Users')->where('email', $request->email)->value('email');
@@ -162,7 +162,7 @@ class UserController extends Controller
 
                         //dd($personal_data[0]->last_name);
                            // dd($direction_type);
-                        return view('Users.edit', [
+                        return view('Users.edit2', [
                                'personal_data' => $personal_data,
                                'identification_number' => $id_number,
                                'directions' => $directions,
@@ -180,7 +180,7 @@ class UserController extends Controller
                         $certificates = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->certificate()->get();
                         $references = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->reference()->get();
                         $skills = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->skill()->get();
-                        return view('Users.edit', [
+                        return view('Users.edit2', [
                                'experiences' => $work_experiences,
                                'certificates' => $certificates,
                                'references' => $references,
@@ -222,7 +222,53 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if ($request->type_edit == 'personal')
+        {
+
+            $personal_data = new PersonalProfile();
+            $personal_data = PersonalProfile::where('user_id',Auth::User()->id)->first();
+            $personal_data->first_name=$request->first_name;
+            $personal_data->last_name=$request->last_name;
+            $personal_data->save();
+            return response()->json(['estado' => 'success',
+                'message' => 'Datos personales actualizados satisfactoriamente']);
+        }
+
+        if ($request->type_edit == 'phone')
+        {//validar que no me estafen con el F12!
+            if ($request->id_phone == "" || $request->phone == "" || $request->user_phone_type == "") 
+            {
+                return response()->json(['estado' => 'fail',
+                    'message' => 'Faltan campos por llenar.']); 
+            }
+
+            if ($request->id_phone == 0)
+            {
+                $phone = new Phone();  
+                $action = "agregada";
+            }
+            else
+            {
+                $phone = Phone::where('id',$request->id_phone)->where('user_id',Auth::User()->id)->first();
+                if ($phone->count() == 0)
+                {
+                    return response()->json(['estado' => 'fail',
+                    'message' => 'Error en los datos recibidos-']);           
+                }
+                $action = "actualizado";
+            }
+
+
+            $phone->user_id = Auth::User()->id;
+            $phone->phone_number = $request->phone;
+            $p_type_id = PhoneType::where('name',$request->user_phone_type)->first('id')->id;
+            $phone->phone_type_id = $p_type_id;
+            $phone->save();
+            return response()->json(['estado' => 'success',
+                'message' => 'Teléfono ' . $action . ' satisfactoriamente.']);
+        }
         /*NOTA: save no hace nada si no hay cambios*/
+        /*
         $source = $request->session()->get('_previous');
         $source_split = explode('/',$source["url"]);
         $edit_type = end($source_split);
@@ -420,6 +466,9 @@ class UserController extends Controller
             } 
 
         }
+        */
+
+
         //¿Volver a editar o inicio? En fin lo mandare al inicio mientras
         return redirect('/');
         //dd($request);
