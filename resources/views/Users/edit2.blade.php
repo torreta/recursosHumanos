@@ -60,8 +60,9 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                         <label for="title">Cédula de Identidad:</label>
                                         <input type="text" class="form-control-plaintext" id="identification_number" name="identification_number" placeholder="Cédula de Identidad" value="{{$identification_number[0]->identification_number}}" readonly>
                                     </div>
+                                 <button class="btn btn-primary" id="ajaxSubmit" onclick="Edit_Profile('personal',{{Auth::User()->id}},'0'); return false;">Actualizar Datos</button>
                                 </div>
-                            <button class="btn btn-primary" id="ajaxSubmit" onclick="Edit_Profile('personal',{{Auth::User()->id}},'0'); return false;">Submit</button>
+
                             </div><br>
                         </form>
                         <form id="Direcciones">
@@ -76,9 +77,9 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                     <div class="form-group" id="details_direction_{{$direction->id}}" style="display:none">
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
-                                                <input type="text" class="form-control" id="id_direction" name="id_direction[]" value="{{$direction->id}}" hidden>
+                                                <input type="text" class="form-control" id="id_direction_{{$direction->id}}" name="id_direction[]" value="{{$direction->id}}" hidden>
                                                 <label>Tipo de Dirección</label>
-                                                <select class="form-control" id="user_direction_type" name="user_direction_type[]">
+                                                <select class="form-control" id="user_direction_type_{{$direction->id}}" name="user_direction_type[]">
                                                 @foreach ($user_direction_types as $user_direction_type)
                                                     @if($direction->direction_type_id == $user_direction_type->id)
                                                     <option value="{{ $user_direction_type->name }}" selected>{{ $user_direction_type->name}}</option>
@@ -90,29 +91,29 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label >País</label>
-                                                <input type="text" class="form-control" id="country" name="country[]" value="{{$direction->country}}">
+                                                <input type="text" class="form-control" id="country_{{$direction->id}}" name="country[]" value="{{$direction->country}}">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label >Dirección 1</label>
-                                            <input type="text" class="form-control" id="line1" name="line1[]" value="{{$direction->adress_line_1}}">
+                                            <input type="text" class="form-control" id="line1_{{$direction->id}}" name="line1[]" value="{{$direction->adress_line_1}}">
                                         </div>
                                         <div class="form-group">
                                             <label >Dirección 2</label>
-                                            <input type="text" class="form-control" id="line2" name="line2[]" value="{{$direction->adress_line_2}}">
+                                            <input type="text" class="form-control" id="line2_{{$direction->id}}" name="line2[]" value="{{$direction->adress_line_2}}">
                                         </div>
                                         <div class="form-group">
                                             <label >Punto de Referencia</label>
-                                            <input type="text" class="form-control" id="reference" name="reference[]" value="{{$direction->reference}}">
+                                            <input type="text" class="form-control" id="reference_{{$direction->id}}" name="reference[]" value="{{$direction->reference}}">
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label >Ciudad</label>
-                                                <input type="text" class="form-control" id="city" name="city[]" value="{{$direction->city}}">
+                                                <input type="text" class="form-control" id="city_{{$direction->id}}" name="city[]" value="{{$direction->city}}">
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label >Estado</label>
-                                                <select class="form-control" id="state" name="state[]">
+                                                <select class="form-control" id="state_{{$direction->id}}" name="state[]">
                                                 @foreach ($states as $state)
                                                     @if($direction->state == $state->name)
                                                     <option value="{{ $state->name }}" selected>{{ $state->name}}</option>
@@ -124,7 +125,7 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                             </div>
                                             <div class="form-group col-md-2">
                                                 <label for="postal">Código Postal</label>
-                                                <input type="text" class="form-control" id="postal" name="postal[]" value="{{$direction->postal_code}}">
+                                                <input type="text" class="form-control" id="postal_{{$direction->id}}" name="postal[]" value="{{$direction->postal_code}}">
                                             </div>
                                         <button class="btn btn-primary" onclick="Edit_Profile('direction',{{Auth::User()->id}},{{$direction->id}}); return false;">Editar Dirección</button>
                                         </div>
@@ -149,9 +150,9 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                             </div>
                                                 <div class="form-row">
                                                    <div class="form-group col-md-6">
-                                                      <input type="text" class="form-control" id="id_direction" name="id_direction[]"  hidden>
+                                                      <input type="text" class="form-control" id="id_direction_0" name="id_direction[]"  hidden>
                                                       <label>Tipo de Dirección</label>
-                                                        <select class="form-control" id="user_direction_type" name="user_direction_type[]">
+                                                        <select class="form-control" id="user_direction_type_0" name="user_direction_type[]">
                                                             @foreach ($user_direction_types as $user_direction_type)
                                                                 <option value="{{ $user_direction_type->name }}">{{ $user_direction_type->name}}</option>
                                                             @endforeach
@@ -159,30 +160,30 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                       <label >País</label>
-                                                      <input type="text" class="form-control" id="country" name="country[]" placeholder="País">
+                                                      <input type="text" class="form-control" id="country_0" name="country[]" placeholder="País">
                                                     </div>
                                                   </div>
 
                                                   <div class="form-group">
                                                     <label >Dirección 1</label>
-                                                    <input type="text" class="form-control" id="line1" name="line1[]" placeholder="Avenida, calle, etc.">
+                                                    <input type="text" class="form-control" id="line1_0" name="line1[]" placeholder="Avenida, calle, etc.">
                                                   </div>
                                                   <div class="form-group">
                                                     <label >Dirección 2</label>
-                                                    <input type="text" class="form-control" id="line2" name="line2[]" placeholder="Apartamento, casa, oficina, piso, etc.">
+                                                    <input type="text" class="form-control" id="line2_0" name="line2[]" placeholder="Apartamento, casa, oficina, piso, etc.">
                                                   </div>
                                                   <div class="form-group">
                                                     <label >Punto de Referencia</label>
-                                                    <input type="text" class="form-control" id="reference" name="reference[]" placeholder="Punto de referencia">
+                                                    <input type="text" class="form-control" id="reference_0" name="reference[]" placeholder="Punto de referencia">
                                                   </div>
                                                   <div class="form-row">
                                                     <div class="form-group col-md-6">
                                                       <label >Ciudad</label>
-                                                      <input type="text" class="form-control" id="city" name="city[]" placeholder="Ciudad">
+                                                      <input type="text" class="form-control" id="city_0" name="city[]" placeholder="Ciudad">
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                       <label >Estado</label>
-                                                      <select class="form-control" id="state" name="state[]">
+                                                      <select class="form-control" id="state_0" name="state[]">
                                                             @foreach ($states as $state)
                                                                 <option value="{{ $state->name }}">{{ $state->name}}</option>
                                                             @endforeach
@@ -190,7 +191,7 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                                     </div>
                                                     <div class="form-group col-md-2">
                                                       <label for="postal">Código Postal</label>
-                                                      <input type="text" class="form-control" id="postal" name="postal[]" placeholder="Código Postal">
+                                                      <input type="text" class="form-control" id="postal_0" name="postal[]" placeholder="Código Postal">
                                                     </div>
                                                 </div>
                                           </div>
@@ -200,7 +201,7 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                 </div>
                             </div><br>
                         </form>
-                        <form action="/user/{{$id}}/edit" method="POST">
+                        <form id="Telefono">
                             <div class="card" >
                                 <div class="card-body">
                                     <h2 class="card-title">Teléfono</H2>
@@ -268,36 +269,38 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                     </div>
                                 </div>
                             </div>
-
                         </form>
                         @endif
 
 
                         @if($type == 'profesional')
-                        <form action="/user/{{$id}}/edit" method="POST">
+                        <form id="Experiencias">
                             @csrf
                             <div class="card" >
                                 <div class="card-body">
                                     <h2 class="card-title">Experiencias Laborales</H2>
-
+                                    <div class="alert alert-success alert-experience" style="display:none"></div>
+                                    <div class="alert alert-danger alert-experience" style="display:none"></div>
                                     <h5 class="clonable-increment-html">Experiencias Laborales registradas</h5>
 
                                     @foreach ($experiences as $experience)
                                     <a href="" onclick="hide({{$experience->id}},'experience'); return false;">{{$experience->name}}</a>
                                         <div class="form-group" id="details_experience_{{$experience->id}}" style="display:none">
                                             <div class="form-row">
-                                                <input type="text" class="form-control" id="id_experience" name="id_experience[]" value="{{$experience->id}}" hidden>
+                                                <input type="text" class="form-control" id="id_experience_{{$experience->id}}" name="id_experience[]" value="{{$experience->id}}" hidden>
                                                 <div class="form-group col-md-9">
                                                     <label for="title">Experiencia:</label>
-                                                    <input type="text" class="form-control" id="name_experience" name="name_experience[]" placeholder="Nombre de la Experiencia Profesional" value="{{$experience->name}}">
+                                                    <input type="text" class="form-control" id="name_experience_{{$experience->id}}" name="name_experience[]" placeholder="Nombre de la Experiencia Profesional" value="{{$experience->name}}">
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="title">Tiempo de experiencia:</label>
-                                                    <input type="text" class="form-control" id="experience_time" name="experience_time[]" placeholder="Tiempo de experiencia" value="{{$experience->time}}">
+                                                    <input type="text" class="form-control" id="experience_time_{{$experience->id}}" name="experience_time[]" placeholder="Tiempo de experiencia" value="{{$experience->time}}">
                                                 </div>
                                             </div>
                                             <label for="title">Descripción:</label>
-                                            <textarea class="form-control" rows="4" cols="50" id="description_experience" name="description_experience[]" placeholder="Descripción de la experiencia profesional""> {{$experience->description}}</textarea>
+                                            <textarea class="form-control" rows="4" cols="50" id="description_experience_{{$experience->id}}" name="description_experience[]" placeholder="Descripción de la experiencia profesional"> {{$experience->description}}</textarea>
+
+                                        <button class="btn btn-primary" onclick="Edit_Profile('experience',{{Auth::User()->id}},'{{$experience->id}}'); return false;">Editar Experiencia</button>
                                         </div>                               
                                     <br>
 
@@ -317,41 +320,45 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                             </div>
                                                 <div class="form-group">
                                                     <div class="form-row">
-                                                    <input type="text" class="form-control" id="id_experience" name="id_experience[]"  hidden>
+                                                    <input type="text" class="form-control" id="id_experience_0" name="id_experience[]" value="0"  hidden>
                                                         <div class="form-group col-md-9">
                                                             <label for="title">Experiencia:</label>
-                                                            <input type="text" class="form-control" id="name_experience" name="name_experience[]" placeholder="Nombre de la Experiencia Profesional" value="{{old('name_experience[]')}}">
+                                                            <input type="text" class="form-control" id="name_experience_0" name="name_experience[]" placeholder="Nombre de la Experiencia Profesional" value="{{old('name_experience[]')}}">
                                                         </div>
                                                         <div class="form-group col-md-3">
                                                             <label for="title">Tiempo:</label>
-                                                            <input type="text" class="form-control" id="experience_time" name="experience_time[]" placeholder="Tiempo de experiencia" value="{{old('experience_time[]')}}">
+                                                            <input type="text" class="form-control" id="experience_time_0" name="experience_time[]" placeholder="Tiempo de experiencia" value="{{old('experience_time[]')}}">
 
                                                         </div>
                                                     </div>
                                                     <label for="title">Descripción:</label>
-                                                    <textarea class="form-control" rows="4" cols="50" id="description_experience" name="description_experience[]" placeholder="Descripción de la experiencia profesional">{{old('description_experience[]')}}</textarea>
+                                                    <textarea class="form-control" rows="4" cols="50" id="description_experience_0" name="description_experience[]" placeholder="Descripción de la experiencia profesional">{{old('description_experience[]')}}</textarea>
                                                 </div>
+                                                <button class="btn btn-primary" onclick="Edit_Profile('experience',{{Auth::User()->id}},'0'); return false;">Añadir Experiencia</button>
                                           </div>
-                                          <button class="clonable-button-add" type="button">Añadir Experiencia</button>
                                         </div>
                                     </div>
                                 </div>
                             </div><br>
+                        </form>
+                        <form id="Habilidades">
                             <div class="card" >
                                 <div class="card-body">
                                     <h2 class="card-title">Habilidades</H2>
-
+                                    <div class="alert alert-success alert-skill" style="display:none"></div>
+                                    <div class="alert alert-danger alert-skill" style="display:none"></div>
 
                                     <h5 class="clonable-increment-html">Habilidades registradas</h5>
 
                                     @foreach ($skills as $skill)
                                     <a href="" onclick="hide({{$skill->id}},'skill'); return false;">{{$skill->name}}</a>
                                     <div class="form-group" id="details_skill_{{$skill->id}}" style="display:none">
-                                        <input type="text" class="form-control" id="id_skill" name="id_skill[]" value="{{$skill->id}}" hidden>
+                                        <input type="text" class="form-control" id="id_skill_{{$skill->id}}" name="id_skill[]" value="{{$skill->id}}" hidden>
                                         <label for="title">Habilidad:</label>
-                                        <input type="text" class="form-control" id="name_skill" name="name_skill[]" placeholder="Nombre de la Habilidad" value="{{$skill->name}}">
+                                        <input type="text" class="form-control" id="name_skill_{{$skill->id}}" name="name_skill[]" placeholder="Nombre de la Habilidad" value="{{$skill->name}}">
                                         <label for="title">Descripción:</label>
-                                        <textarea class="form-control" rows="4" cols="50" id="description_skill" name="description_skill[]" placeholder="Descripción de la Experiencia">{{$skill->description}}</textarea>
+                                        <textarea class="form-control" rows="4" cols="50" id="description_skill_{{$skill->id}}" name="description_skill[]" placeholder="Descripción de la Experiencia">{{$skill->description}}</textarea>
+                                        <button class="btn btn-primary" onclick="Edit_Profile('skill',{{Auth::User()->id}},'{{$skill->id}}'); return false;">Editar Habilidad</button>
                                     </div>                                    
                                     <br>
 
@@ -369,42 +376,46 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                                 </div>
                                             </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="id_skill" name="id_skill[]"  hidden>
+                                                    <input type="text" class="form-control" id="id_skill_0" name="id_skill[]" value="0" hidden>
                                                     <label for="title">Habilidad:</label>
-                                                    <input type="text" class="form-control" id="name_skill" name="name_skill[]" placeholder="Nombre de la Habilidad" value="{{old('name_skill[]')}}">
+                                                    <input type="text" class="form-control" id="name_skill_0" name="name_skill[]" placeholder="Nombre de la Habilidad" value="{{old('name_skill[]')}}">
                                                     <label for="title">Descripción:</label>
-                                                    <textarea class="form-control" rows="4" cols="50" id="description_skill" name="description_skill[]" placeholder="Descripción de la Habilidad" >{{old('description_skill[]')}}</textarea>
+                                                    <textarea class="form-control" rows="4" cols="50" id="description_skill_0" name="description_skill[]" placeholder="Descripción de la Habilidad" >{{old('description_skill[]')}}</textarea>
                                                 </div>
+                                                <button class="btn btn-primary" onclick="Edit_Profile('skill',{{Auth::User()->id}},'0'); return false;">Añadir Habilidad</button>
                                           </div>
-                                          <button class="clonable-button-add" type="button">Añadir Habilidad</button>
                                         </div>
                                     </div>
                                 </div>
                             </div><br>
+                        </form>
+                        <form id="Certificados">
                             <div class="card" >
                                 <div class="card-body">
                                     <h2 class="card-title">Certificados</H2>
-
+                                    <div class="alert alert-success alert-certificate" style="display:none"></div>
+                                    <div class="alert alert-danger alert-certificate" style="display:none"></div>
 
                                     <h5 class="clonable-increment-html">Certificados registrados</h5>
 
                                     @foreach ($certificates as $certificate)
                                     <a href="" onclick="hide({{$certificate->id}},'certificate'); return false;">{{$certificate->name}}</a>
                                     <div class="form-group" id="details_certificate_{{$certificate->id}}" style="display:none">
-                                        <input type="text" class="form-control" id="id_certificate" name="id_certificate[]" value="{{$certificate->id}}" hidden>
+                                        <input type="text" class="form-control" id="id_certificate_{{$certificate->id}}" name="id_certificate[]" value="{{$certificate->id}}" hidden>
                                         <div class="form-row">
                                             <div class="form-group col-md-9">
                                                 <label for="title">Titulo del Certificado:</label>
-                                                <input type="text" class="form-control" id="name_certificate" name="name_certificate[]" placeholder="Nombre del Título" value="{{$certificate->name}}">
+                                                <input type="text" class="form-control" id="name_certificate_{{$certificate->id}}" name="name_certificate[]" placeholder="Nombre del Título" value="{{$certificate->name}}">
                                             </div>
                                             <div class="form-group col-md-3">
                                                 <label for="title">Año de Adquisición:</label>
-                                                <input type="number" class="form-control" id="year" name="year[]" placeholder="Año Adquirido"" value="{{$certificate->certificate_year}}">
+                                                <input type="number" class="form-control" id="year_{{$certificate->id}}" name="year[]" placeholder="Año Adquirido"" value="{{$certificate->certificate_year}}">
                                             </div>
                                         </div>
                                             <label for="title">Descripción:</label>
-                                            <textarea class="form-control" rows="4" cols="50" id="description_certificate" name="description_certificate[]" placeholder="Descripción del Certificado" >{{$certificate->description}}</textarea>
-                                        </div>                                 
+                                            <textarea class="form-control" rows="4" cols="50" id="description_certificate_{{$certificate->id}}" name="description_certificate[]" placeholder="Descripción del Certificado" >{{$certificate->description}}</textarea>
+                                        <button class="btn btn-primary" onclick="Edit_Profile('certificate',{{Auth::User()->id}},'{{$certificate->id}}'); return false;">Editar Certificado</button>
+                                    </div>                                 
                                     <br>
 
                                     @endforeach
@@ -421,50 +432,54 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                                 </div>
                                             </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="id_certificate" name="id_certificate[]" hidden>
+                                                    <input type="text" class="form-control" id="id_certificate_0" name="id_certificate[]" value="0" hidden>
                                                     <div class="form-row">
                                                         <div class="form-group col-md-9">
                                                             <label for="title">Titulo del Certificado:</label>
-                                                            <input type="text" class="form-control" id="name_certificate" name="name_certificate[]" placeholder="Nombre del Título" value="{{old('name_certificate[]')}}">
+                                                            <input type="text" class="form-control" id="name_certificate_0" name="name_certificate[]" placeholder="Nombre del Título" value="{{old('name_certificate[]')}}">
                                                         </div>
                                                         <div class="form-group col-md-3">
                                                             <label for="title">Año de Adquisición:</label>
-                                                            <input type="number" class="form-control" id="year" name="year[]" placeholder="Año Adquirido" value="{{old('year[]')}}">
+                                                            <input type="number" class="form-control" id="year_0" name="year[]" placeholder="Año Adquirido" value="{{old('year[]')}}">
 
                                                         </div>
                                                     </div>
                                                     <label for="title">Descripción:</label>
-                                                    <textarea class="form-control" rows="4" cols="50" id="description_certificate" name="description_certificate[]" placeholder="Descripción del Certificado">{{old('description_certificate[]')}}</textarea>
+                                                    <textarea class="form-control" rows="4" cols="50" id="description_certificate_0" name="description_certificate[]" placeholder="Descripción del Certificado">{{old('description_certificate[]')}}</textarea>
                                                 </div>
+                                            <button class="btn btn-primary" onclick="Edit_Profile('certificate',{{Auth::User()->id}},'0'); return false;">Añadir Certificado </button>
                                           </div>
-                                          <button class="clonable-button-add" type="button">Añadir Certificado</button>
                                         </div>
                                     </div>
                                 </div>
                             </div><br>
+                        </form>
+                        <form id="Referencias">
                             <div class="card" >
                                 <div class="card-body">
                                     <h2 class="card-title">Referencias Personales</H2>
-
+                                    <div class="alert alert-success alert-reference" style="display:none"></div>
+                                    <div class="alert alert-danger alert-reference" style="display:none"></div>
 
                                     <h5 class="clonable-increment-html">Referencias registradas</h5>
 
                                     @foreach ($references as $reference)
                                     <a href="" onclick="hide({{$reference->id}},'reference'); return false;">{{$reference->name}}</a>
                                     <div class="form-group" id="details_reference_{{$reference->id}}" style="display:none">
-                                        <input type="text" class="form-control" id="id_reference" name="id_reference[]" value="{{$reference->id}}" hidden>
+                                        <input type="text" class="form-control" id="id_reference_{{$reference->id}}" name="id_reference[]" value="{{$reference->id}}" hidden>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="title">Nombre:</label>
-                                                <input type="text" class="form-control" id="name_reference" name="name_reference[]" placeholder="Nombre" value="{{$reference->name}}">
+                                                <input type="text" class="form-control" id="name_reference_{{$reference->id}}" name="name_reference[]" placeholder="Nombre" value="{{$reference->name}}">
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="title">Teléfono:</label>
-                                                <input type="text" class="form-control" id="phone_reference" name="phone_reference[]" placeholder="Teléfono de Contacto" value="{{$reference->phone_number}}">
+                                                <input type="text" class="form-control" id="phone_reference_{{$reference->id}}" name="phone_reference[]" placeholder="Teléfono de Contacto" value="{{$reference->phone_number}}">
                                             </div>
                                         </div>
                                         <label for="title">Tipo de Relación:</label>
-                                        <input type="text" class="form-control" id="relation" name="relation[]" placeholder="Tipo de relación con el contacto" value="{{$reference->relation}}">
+                                        <input type="text" class="form-control" id="relation_{{$reference->id}}" name="relation[]" placeholder="Tipo de relación con el contacto" value="{{$reference->relation}}">
+                                    <button class="btn btn-primary" onclick="Edit_Profile('reference',{{Auth::User()->id}},'{{$reference->id}}'); return false;">Editar Referencia</button>
                                     </div>                              
                                     <br>
 
@@ -483,28 +498,27 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                                                 </div>
                                             </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="id_reference" name="id_reference[]" hidden>
+                                                    <input type="text" class="form-control" id="id_reference_0" name="id_reference[]" value="0" hidden>
                                                     <div class="form-row">
                                                         <div class="form-group col-md-6">
                                                             <label for="title">Nombre:</label>
-                                                            <input type="text" class="form-control" id="name_reference" name="name_reference[]" placeholder="Nombre" value="{{old('name_reference[]')}}">
+                                                            <input type="text" class="form-control" id="name_reference_0" name="name_reference[]" placeholder="Nombre" value="{{old('name_reference[]')}}">
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label for="title">Teléfono:</label>
-                                                            <input type="text" class="form-control" id="phone_reference" name="phone_reference[]" placeholder="Teléfono de Contacto" value="{{old('phone_reference[]')}}">
+                                                            <input type="text" class="form-control" id="phone_reference_0" name="phone_reference[]" placeholder="Teléfono de Contacto" value="{{old('phone_reference[]')}}">
 
                                                         </div>
                                                     </div>
                                                     <label for="title">Tipo de Relación:</label>
-                                                    <input type="text" class="form-control" id="relation" name="relation[]" placeholder="Tipo de relación con el contacto" value="{{old('relation[]')}}">
+                                                    <input type="text" class="form-control" id="relation_0" name="relation[]" placeholder="Tipo de relación con el contacto" value="{{old('relation[]')}}">
                                                 </div>
+                                            <button class="btn btn-primary" onclick="Edit_Profile('reference',{{Auth::User()->id}},'0'); return false;">Añadir Referencia</button>
                                           </div>
-                                          <button class="clonable-button-add" type="button">Añadir Referencia</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </form>
                         @endif
 
@@ -542,18 +556,57 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                         success: function(result){
                             if(result.estado == 'success')
                             {
+                                jQuery('.alert-danger.alert-'+section).hide();
                                 jQuery('.alert-success.alert-'+section).show();
                                 jQuery('.alert-success.alert-'+section).html(result.message);
                             }
                             else
                             {
+                                jQuery('.alert-success.alert-'+section).hide();
                                 jQuery('.alert-danger.alert-'+section).show();
                                 jQuery('.alert-danger.alert-'+section).html(result.message);
                             }
                         }});
                     break;
+
                 case 'direction':
+
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "{{ url('/user/"+ id +"/edit') }}",
+                        method: 'post',
+                        data: {
+                            id_direction: jQuery('#id_phone_'+item_id).val(),
+                            user_direction_type: jQuery('#user_direction_type_'+item_id).val(),
+                            country: jQuery('#country_'+item_id).val(),
+                            line1: jQuery('#line1_'+item_id).val(),
+                            line2: jQuery('#line2_'+item_id).val(),
+                            reference: jQuery('#reference_'+item_id).val(),
+                            city: jQuery('#city_'+item_id).val(),
+                            state: jQuery('#state_'+item_id).val(),
+                            postal: jQuery('#postal_'+item_id).val(),
+                            type_edit: section
+                        },
+                        success: function(result){
+                            if(result.estado == 'success')
+                            {
+                                jQuery('.alert-danger.alert-'+section).hide();
+                                jQuery('.alert-success.alert-'+section).show();
+                                jQuery('.alert-success.alert-'+section).html(result.message);
+                            }
+                            else
+                            {
+                                jQuery('.alert-success.alert-'+section).hide();
+                                jQuery('.alert-danger.alert-'+section).show();
+                                jQuery('.alert-danger.alert-'+section).html(result.message);
+                            }
+                        }}); 
                     break;
+
                 case 'phone':
                     $.ajaxSetup({
                         headers: {
@@ -572,16 +625,146 @@ EL CAMPO TEXT AREA SE CLONA JUNTO A SU CONTENIDO
                         success: function(result){
                             if(result.estado == 'success')
                             {
+                                jQuery('.alert-danger.alert-'+section).hide();
                                 jQuery('.alert-success.alert-'+section).show();
                                 jQuery('.alert-success.alert-'+section).html(result.message);
                             }
                             else
                             {
+                                jQuery('.alert-success.alert-'+section).hide();
                                 jQuery('.alert-danger.alert-'+section).show();
                                 jQuery('.alert-danger.alert-'+section).html(result.message);
                             }
                         }});                    
                     break;
+
+                case 'experience':
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "{{ url('/user/"+ id +"/edit') }}",
+                        method: 'post',
+                        data: {
+                            id_experience: jQuery('#id_experience_'+item_id).val(),
+                            name_experience: jQuery('#name_experience_'+item_id).val(),
+                            experience_time: jQuery('#experience_time_'+item_id).val(),
+                            description_experience: jQuery('#description_experience_'+item_id).val(),
+                            type_edit: section
+                        },
+                        success: function(result){
+                            if(result.estado == 'success')
+                            {
+                                jQuery('.alert-danger.alert-'+section).hide();
+                                jQuery('.alert-success.alert-'+section).show();
+                                jQuery('.alert-success.alert-'+section).html(result.message);
+                            }
+                            else
+                            {
+                                jQuery('.alert-success.alert-'+section).hide();
+                                jQuery('.alert-danger.alert-'+section).show();
+                                jQuery('.alert-danger.alert-'+section).html(result.message);
+                            }
+                        }}); 
+                    break;
+                
+                case 'skill':
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "{{ url('/user/"+ id +"/edit') }}",
+                        method: 'post',
+                        data: {
+                            id_skill: jQuery('#id_skill_'+item_id).val(),
+                            name_skill: jQuery('#name_skill_'+item_id).val(),
+                            description_skill: jQuery('#description_skill_'+item_id).val(),
+                            type_edit: section
+                        },
+                        success: function(result){
+                            if(result.estado == 'success')
+                            {
+                                jQuery('.alert-danger.alert-'+section).hide();
+                                jQuery('.alert-success.alert-'+section).show();
+                                jQuery('.alert-success.alert-'+section).html(result.message);
+                            }
+                            else
+                            {
+                                jQuery('.alert-success.alert-'+section).hide();
+                                jQuery('.alert-danger.alert-'+section).show();
+                                jQuery('.alert-danger.alert-'+section).html(result.message);
+                            }
+                        }}); 
+                    break;
+
+                case 'certificate':
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "{{ url('/user/"+ id +"/edit') }}",
+                        method: 'post',
+                        data: {
+                            id_certificate: jQuery('#id_certificate_'+item_id).val(),
+                            name_certificate: jQuery('#name_certificate_'+item_id).val(),
+                            year: jQuery('#year_'+item_id).val(),
+                            description_certificate: jQuery('#description_certificate_'+item_id).val(),
+                            type_edit: section
+                        },
+                        success: function(result){
+                            if(result.estado == 'success')
+                            {
+                                jQuery('.alert-danger.alert-'+section).hide();
+                                jQuery('.alert-success.alert-'+section).show();
+                                jQuery('.alert-success.alert-'+section).html(result.message);
+                            }
+                            else
+                            {
+                                jQuery('.alert-success.alert-'+section).hide();
+                                jQuery('.alert-danger.alert-'+section).show();
+                                jQuery('.alert-danger.alert-'+section).html(result.message);
+                            }
+                        }}); 
+                    break;
+                
+                case 'reference':
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "{{ url('/user/"+ id +"/edit') }}",
+                        method: 'post',
+                        data: {
+                            id_reference: jQuery('#id_reference_'+item_id).val(),
+                            name_reference: jQuery('#name_reference_'+item_id).val(),
+                            phone_reference: jQuery('#phone_reference_'+item_id).val(),
+                            relation: jQuery('#relation_'+item_id).val(),
+                            type_edit: section
+                        },
+                        success: function(result){
+                            if(result.estado == 'success')
+                            {
+                                jQuery('.alert-danger.alert-'+section).hide();
+                                jQuery('.alert-success.alert-'+section).show();
+                                jQuery('.alert-success.alert-'+section).html(result.message);
+                            }
+                            else
+                            {
+                                jQuery('.alert-success.alert-'+section).hide();
+                                jQuery('.alert-danger.alert-'+section).show();
+                                jQuery('.alert-danger.alert-'+section).html(result.message);
+                            }
+                        }});
+                    break;
+                
                 default: break;
             }
                 
