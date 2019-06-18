@@ -72,6 +72,7 @@
                         <a href="{{ route('candidate') }}">Postularse(candidato)</a>
                         <a href="{{ route('moderator') }}">Moderar</a>
                         <a href="{{ route('admin') }}">Admin</a>
+                        <a href="/user/{{Auth::User()->id}}/edit/personal">Editar Perfil</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
                         <a href="{{ route('register.index') }}">Register</a>

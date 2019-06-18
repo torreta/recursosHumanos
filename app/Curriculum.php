@@ -23,7 +23,7 @@ class Curriculum extends Model
         return $this->hasMany('App\PersonalReference');
     }
 
-    public function cerfiticate()
+    public function certificate()
     {
         return $this->hasMany('App\Certificate');
     }

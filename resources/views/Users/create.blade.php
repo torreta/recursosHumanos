@@ -9,7 +9,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <a class="btn btn-secondary" href="/expense_reports">Regresar</a>
+            <a class="btn btn-secondary" href="/">Regresar</a>
         </div>
     </div>
 

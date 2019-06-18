@@ -11,15 +11,15 @@ class direction_type_seeder extends Seeder
      */
     public function run()
     {
-        DB::table('Direction_Type')->insert([
+        DB::table('Direction_Types')->insert([
             'name' => 'Habitación'
         ]);
 
-        DB::table('Direction_Type')->insert([
+        DB::table('Direction_Types')->insert([
             'name' => 'Trabajo'
         ]);
 
-        DB::table('Direction_Type')->insert([
+        DB::table('Direction_Types')->insert([
             'name' => 'Empresa'
         ]);
     }

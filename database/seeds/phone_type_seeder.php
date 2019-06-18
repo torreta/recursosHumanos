@@ -11,19 +11,19 @@ class phone_type_seeder extends Seeder
      */
     public function run()
     {
-        DB::table('Phone_Type')->insert([
+        DB::table('Phone_Types')->insert([
             'name' => 'Hogar'
         ]);
 
-         DB::table('Phone_Type')->insert([
+         DB::table('Phone_Types')->insert([
             'name' => 'Trabajo'
         ]);
 
-        DB::table('Phone_Type')->insert([
+        DB::table('Phone_Types')->insert([
             'name' => 'Celular'
         ]);
 
-        DB::table('Phone_Type')->insert([
+        DB::table('Phone_Types')->insert([
             'name' => 'Personal'
         ]);
     }

@@ -11,6 +11,15 @@ use App\PersonalProfile;
 use App\CandidateProfile;
 use App\IdentificationType;
 use App\Curriculum;
+use App\State;
+use App\Phone;
+use App\PhoneType;
+use App\Direction;
+use App\DirectionType;
+use App\WorkExperience;
+use App\Skill;
+use App\PersonalReference;
+use App\Certificate;
 
 class UserController extends Controller
 {
@@ -46,8 +55,8 @@ class UserController extends Controller
             'email' => 'required|e-mail|unique:Users,email',
             'password' => 'required|min:8|confirmed|regex:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/',
             'identification_number' => 'required|integer|unique:Candidate_Profiles,identification_number',
-            'first_name' => 'required|min:3|regex:/^[a-zA-Z]*$/',
-            'last_name' => 'required|min:3|regex:/^[a-zA-Z]*$/'
+            'first_name' => 'required|min:3|regex:/^[a-zA-Z ]*$/',
+            'last_name' => 'required|min:3|regex:/^[a-zA-Z ]*$/'
         ]);
 
     	$check_user = DB::table('Users')->where('email', $request->email)->value('email');
@@ -132,9 +141,76 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id,$type)
     {
-        //
+        if(Auth::Check())
+        {
+            if(Auth::User()->id == $id)
+            {
+                switch ($type) 
+                {
+                    case 'personal':
+
+                        $direction_type = DB::table('Direction_Types')->whereNotIn('name', ['Empresa'])->get();
+                        $phone_type = DB::table('Phone_Types')->get();
+                        $personal_data = Auth::User()->personal_profile()->select(array('first_name', 'last_name'))->get();
+                        $id_number = Auth::User()->candidate_profile()->select('identification_number')->get();
+                        $directions = Auth::User()->direction()->select(array('id', 'country','adress_line_1',
+                            'adress_line_2','city','state','reference','postal_code','direction_type_id'))->get();
+                        $phones = Auth::User()->phone()->select('id','phone_number','phone_type_id')->get();
+                        $states = DB::table('States')->get();
+
+                        //dd($personal_data[0]->last_name);
+                           // dd($direction_type);
+                        return view('Users.edit2', [
+                               'personal_data' => $personal_data,
+                               'identification_number' => $id_number,
+                               'directions' => $directions,
+                               'phones' => $phones,
+                               'user_direction_types' => $direction_type,
+                               'user_phone_types' => $phone_type,
+                               'type' => $type,
+                               'id' => $id,
+                               'states' => $states
+                               
+                        ]);
+                        break;
+                    case 'profesional':
+                        $work_experiences = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->work_experience()->get();
+                        $certificates = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->certificate()->get();
+                        $references = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->reference()->get();
+                        $skills = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->skill()->get();
+                        return view('Users.edit2', [
+                               'experiences' => $work_experiences,
+                               'certificates' => $certificates,
+                               'references' => $references,
+                               'skills' => $skills,
+                               'type' => $type,
+                               'id' => $id
+                        ]);
+                        break;
+                        break;
+                    case 'moderador':
+                        //Codigo de perfil moderador. TODO
+                        break;
+                    case 'admin':
+                        //Codigo de perfil admin. TODO
+                        break;
+                    default:
+                        return redirect('/');
+                }
+            }
+            else
+            {
+                return redirect('/');
+            }
+        }
+        else
+        {
+            return redirect('/');
+        }
+
+
     }
 
     /**
@@ -146,7 +222,440 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if ($request->type_edit == 'personal')
+        {
+
+            $personal_data = new PersonalProfile();
+            $personal_data = PersonalProfile::where('user_id',Auth::User()->id)->first();
+            $personal_data->first_name=$request->first_name;
+            $personal_data->last_name=$request->last_name;
+            $personal_data->save();
+            return response()->json(['estado' => 'success',
+                'message' => 'Datos personales actualizados satisfactoriamente']);
+        }
+
+        if ($request->type_edit == 'phone')
+        {
+            if ($request->id_phone == "" || $request->phone == "" || $request->user_phone_type == "") 
+            {
+                return response()->json(['estado' => 'fail',
+                    'message' => 'Faltan campos por llenar.']); 
+            }
+
+            if ($request->id_phone == 0)
+            {
+                $phone = new Phone();  
+                $action = "registrado";
+            }
+            else
+            {
+                $phone = Phone::where('id',$request->id_phone)->where('user_id',Auth::User()->id)->first();
+                if ($phone->count() == 0)
+                {
+                    return response()->json(['estado' => 'fail',
+                    'message' => 'Error en los datos recibidos-']);           
+                }
+                $action = "actualizado";
+            }
+
+
+            $phone->user_id = Auth::User()->id;
+            $phone->phone_number = $request->phone;
+            $p_type_id = PhoneType::where('name',$request->user_phone_type)->first('id')->id;
+            $phone->phone_type_id = $p_type_id;
+            $phone->save();
+            return response()->json(['estado' => 'success',
+                'message' => 'Teléfono ' . $action . ' satisfactoriamente.']);
+        }
+
+        if ($request->type_edit == 'direction')
+        {
+            if ($request->id_direction == "" || $request->user_direction_type == "" || $request->country == "" ||
+                $request->line1 == "" || $request->line2 == "" || $request->reference == "" ||
+                $request->city == "" || $request->state == "" || $request->postal == "" ) 
+            {
+                return response()->json(['estado' => 'fail',
+                    'message' => 'Faltan campos por llenar.']); 
+            }
+
+            if ($request->id_direction == 0)
+            {
+                $direction = new Direction();  
+                $action = "registrada";
+            }
+            else
+            {
+                $direction = Direction::where('id',$request->id_direction)->where('user_id',Auth::User()->id)->first();
+                if ($direction->count() == 0)
+                {
+                    return response()->json(['estado' => 'fail',
+                    'message' => 'Error en los datos recibidos-']);           
+                }
+                $action = "actualizada";
+            }
+
+
+            $direction->user_id = Auth::User()->id;
+            $direction->country = $request->country;
+            $direction->adress_line_1 = $request->line1;
+            $direction->adress_line_2 = $request->line2;
+            $direction->city = $request->city;
+            $direction->state = $request->state;
+            $direction->reference = $request->reference;
+            $direction->postal_code = $request->postal;
+            $d_type_id = DirectionType::where('name',$request->user_direction_type)->first('id')->id;
+            $direction->direction_type_id = $d_type_id;
+            $direction->save();
+            return response()->json(['estado' => 'success',
+                'message' => 'Dirección ' . $action . ' satisfactoriamente.']);
+        }
+
+        if ($request->type_edit == 'experience')
+        {
+            $curriculum_id = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->id;
+            if ($request->id_experience == "" || $request->name_experience == "" || $request->experience_time == "" ||
+                $request->description_experience == "" ) 
+            {
+                return response()->json(['estado' => 'fail',
+                    'message' => 'Faltan campos por llenar.']); 
+            }
+
+            if ($request->id_experience == 0)
+            {
+                $experience = new WorkExperience();  
+                $action = "registrada";
+            }
+            else
+            {
+                $experience = WorkExperience::where('id',$request->id_experience)->where('curriculum_id',$curriculum_id)->first();
+                if ($experience->count() == 0)
+                {
+                    return response()->json(['estado' => 'fail',
+                    'message' => 'Error en los datos recibidos-']);           
+                }
+                $action = "actualizada";
+            }
+
+
+            $experience->curriculum_id = $curriculum_id;
+            $experience->name = $request->name_experience;
+            $experience->description = $request->description_experience;
+            $experience->time = $request->experience_time;
+            $experience->save();
+            return response()->json(['estado' => 'success',
+                'message' => 'Experiencia ' . $action . ' satisfactoriamente.']);
+        }
+
+        if ($request->type_edit == 'skill')
+        {
+            $curriculum_id = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->id;
+            if ($request->id_skill == "" || $request->name_skill == "" || $request->description_skill == "") 
+            {
+                return response()->json(['estado' => 'fail',
+                    'message' => 'Faltan campos por llenar.']); 
+            }
+
+            if ($request->id_skill == 0)
+            {
+                $skill = new Skill();  
+                $action = "registrada";
+            }
+            else
+            {
+                $skill = Skill::where('id',$request->id_skill)->where('curriculum_id',$curriculum_id)->first();
+                if ($skill->count() == 0)
+                {
+                    return response()->json(['estado' => 'fail',
+                    'message' => 'Error en los datos recibidos-']);           
+                }
+                $action = "actualizada";
+            }
+
+            $skill->curriculum_id = $curriculum_id;
+            $skill->name = $request->name_skill;
+            $skill->description = $request->description_skill;
+            $skill->save();
+            return response()->json(['estado' => 'success',
+                'message' => 'Habilidad ' . $action . ' satisfactoriamente.']);
+        }
+
+        if ($request->type_edit == 'certificate')
+        {
+            $curriculum_id = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->id;
+            if ($request->id_certificate == "" || $request->name_certificate == "" || $request->year == "" ||
+                $request->description_certificate == "" ) 
+            {
+                return response()->json(['estado' => 'fail',
+                    'message' => 'Faltan campos por llenar.']); 
+            }
+
+            if ($request->id_certificate == 0)
+            {
+                $certificate = new Certificate();  
+                $action = "registrado";
+            }
+            else
+            {
+                $certificate = Certificate::where('id',$request->id_certificate)->where('curriculum_id',$curriculum_id)->first();
+                if ($certificate->count() == 0)
+                {
+                    return response()->json(['estado' => 'fail',
+                    'message' => 'Error en los datos recibidos-']);           
+                }
+                $action = "actualizado";
+            }
+
+
+            $certificate->curriculum_id = $curriculum_id;
+            $certificate->name = $request->name_certificate;
+            $certificate->description = $request->description_certificate;
+            $certificate->certificate_year = $request->year;
+            $certificate->save();
+            return response()->json(['estado' => 'success',
+                'message' => 'Certificado ' . $action . ' satisfactoriamente.']);
+        }
+
+        if ($request->type_edit == 'reference')
+        {
+            $curriculum_id = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->id;
+            if ($request->id_reference == "" || $request->name_reference == "" || $request->phone_reference == "" ||
+                $request->relation == "" ) 
+            {
+                return response()->json(['estado' => 'fail',
+                    'message' => 'Faltan campos por llenar.']); 
+            }
+
+            if ($request->id_reference == 0)
+            {
+                $reference = new PersonalReference();  
+                $action = "registrada";
+            }
+            else
+            {
+                $reference = PersonalReference::where('id',$request->id_reference)->where('curriculum_id',$curriculum_id)->first();
+                if ($reference->count() == 0)
+                {
+                    return response()->json(['estado' => 'fail',
+                    'message' => 'Error en los datos recibidos-']);           
+                }
+                $action = "actualizada";
+            }
+
+
+            $reference->curriculum_id = $curriculum_id;
+            $reference->name = $request->name_reference;
+            $reference->relation = $request->relation;
+            $reference->phone_number = $request->phone_reference;
+            $reference->save();
+            return response()->json(['estado' => 'success',
+                'message' => 'Referencia ' . $action . ' satisfactoriamente.']);
+        }
+        /*NOTA: save no hace nada si no hay cambios*/
+        /*
+        $source = $request->session()->get('_previous');
+        $source_split = explode('/',$source["url"]);
+        $edit_type = end($source_split);
+        if ($edit_type == 'personal')
+        {
+            //Actualizamos el cliente. 
+            $personal_data = new PersonalProfile();
+            $personal_data = PersonalProfile::where('user_id',Auth::User()->id)->first();
+            $personal_data->first_name=$request->first_name;
+            $personal_data->last_name=$request->last_name;
+            $personal_data->save();
+
+            //Actualizamos/Insertamos los teléfonos
+            for ($i = 0; $i < count($request->id_phone); $i++)
+            {
+                if ($request->id_phone[$i] == null)
+                {
+                    if ($request->phone[$i] != null)
+                    {
+                        $phone = new Phone();  
+                        $phone->user_id = Auth::User()->id;
+                        $phone->phone_number = $request->phone[$i];
+                        $p_type_id = PhoneType::where('name',$request->user_phone_type[$i])->first('id')->id;
+                        $phone->phone_type_id = $p_type_id;
+                        $phone->save();
+                    }
+                }
+                else
+                {
+                    if ($request->phone[$i] != null)
+                    {
+                        $phone = Phone::where('id',$request->id_phone[$i])->first();
+                        $phone->phone_number = $request->phone[$i];
+                        $p_type_id = PhoneType::where('name',$request->user_phone_type[$i])->first('id')->id;
+                        $phone->phone_type_id = $p_type_id;
+                        $phone->save();
+                    }
+                }
+            }
+
+            //Actualizamos/insertamos las direcciones
+            for ($i = 0; $i < count($request->id_direction); $i++)
+            {
+                if ($request->id_direction[$i] == null)
+                {
+                    if ($request->country[$i] != null && $request->line1[$i] != null && $request->line2[$i] != null
+                    && $request->city[$i] != null && $request->state[$i] != null && $request->reference[$i] != null) 
+                    {
+                        $direction = new Direction();  
+                        $direction->user_id = Auth::User()->id;
+                        $direction->country = $request->country[$i];
+                        $direction->adress_line_1 = $request->line1[$i];
+                        $direction->adress_line_2 = $request->line2[$i];
+                        $direction->city = $request->city[$i];
+                        $direction->state = $request->state[$i];
+                        $direction->reference = $request->reference[$i];
+                        $direction->postal_code = $request->postal[$i];
+                        $d_type_id = DirectionType::where('name',$request->user_direction_type[$i])->first('id')->id;
+                        $direction->direction_type_id = $d_type_id;
+                        $direction->save();
+                    }
+                } 
+                else
+                {
+                    if ($request->country[$i] != null && $request->line1[$i] != null && $request->line2[$i] != null
+                    && $request->city[$i] != null && $request->state[$i] != null && $request->reference[$i] != null) 
+                    {
+                        $direction = Direction::where('id',$request->id_direction[$i])->first();
+                        $direction->country = $request->country[$i];
+                        $direction->adress_line_1 = $request->line1[$i];
+                        $direction->adress_line_2 = $request->line2[$i];
+                        $direction->city = $request->city[$i];
+                        $direction->state = $request->state[$i];
+                        $direction->reference = $request->reference[$i];
+                        $direction->postal_code = $request->postal[$i];
+                        $d_type_id = DirectionType::where('name',$request->user_direction_type[$i])->first('id')->id;
+                        $direction->direction_type_id = $d_type_id;
+                        $direction->save();                    
+                    }
+                }           
+            }
+        }
+
+        if ($edit_type == 'profesional')
+        {
+            $curriculum_id = Auth::User()->candidate_profile()->where('user_id',Auth::User()->id)->first()->curriculum()->first()->id;
+            //Actualizamos/Insertamos las experiencias personales
+            for ($i = 0; $i < count($request->id_experience); $i++)
+            {
+                if ($request->id_experience[$i] == null)
+                {
+                    if ($request->name_experience[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $experience = new WorkExperience();  
+                        $experience->curriculum_id = $curriculum_id;
+                        $experience->name = $request->name_experience[$i];
+                        $experience->description = $request->description_experience[$i];
+                        $experience->time = $request->experience_time[$i];
+                        $experience->save();
+                    }
+                }
+                else
+                {
+                    if ($request->name_experience[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $experience = WorkExperience::where('id',$request->id_experience[$i])->first();
+                        $experience->name = $request->name_experience[$i];
+                        $experience->description = $request->description_experience[$i];
+                        $experience->time = $request->experience_time[$i];
+                        $experience->save();
+                    }
+                }
+            }  
+
+            //Actualizamos/Insertamos las habilidades profesionales
+            for ($i = 0; $i < count($request->id_skill); $i++)
+            {
+                if ($request->id_skill[$i] == null)
+                {
+                    if ($request->name_skill[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $skill = new Skill();  
+                        $skill->curriculum_id = $curriculum_id;
+                        $skill->name = $request->name_skill[$i];
+                        $skill->description = $request->description_skill[$i];
+                        $skill->save();
+                    }
+                }
+                else
+                {
+                    if ($request->name_skill[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $skill = Skill::where('id',$request->id_skill[$i])->first();
+                        $skill->name = $request->name_skill[$i];
+                        $skill->description = $request->description_skill[$i];
+                        $skill->save();
+                    }
+                }
+            }   
+
+            //Actualizamos/Insertamos los certificados
+            for ($i = 0; $i < count($request->id_certificate); $i++)
+            {
+                if ($request->id_certificate[$i] == null)
+                {
+                    if ($request->name_certificate[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $certificate = new Certificate();  
+                        $certificate->curriculum_id = $curriculum_id;
+                        $certificate->name = $request->name_certificate[$i];
+                        $certificate->description = $request->description_certificate[$i];
+                        $certificate->certificate_year = $request->year[$i];
+                        $certificate->save();
+                    }
+                }
+                else
+                {
+                    if ($request->name_certificate[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $certificate = Certificate::where('id',$request->id_certificate[$i])->first();
+                        $certificate->name = $request->name_certificate[$i];
+                        $certificate->description = $request->description_certificate[$i];
+                        $certificate->certificate_year = $request->year[$i];
+                        $certificate->save();
+                    }
+                }
+            }  
+
+            //Actualizamos/Insertamos las referencias personales
+            for ($i = 0; $i < count($request->id_reference); $i++)
+            {
+                if ($request->id_reference[$i] == null)
+                {
+                    if ($request->name_reference[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $reference = new PersonalReference();  
+                        $reference->curriculum_id = $curriculum_id;
+                        $reference->name = $request->name_reference[$i];
+                        $reference->relation = $request->relation[$i];
+                        $reference->phone_number = $request->phone_reference[$i];
+                        $reference->save();
+                    }
+                }
+                else
+                {
+                    if ($request->name_reference[$i] != null)//REVISAR tag:campos_no_nulls
+                    {
+                        $reference = PersonalReference::where('id',$request->id_reference[$i])->first();
+                        $reference->name = $request->name_reference[$i];
+                        $reference->relation = $request->relation[$i];
+                        $reference->phone_number = $request->phone_reference[$i];
+                        $reference->save();
+                    }
+                }
+            } 
+
+        }
+        */
+
+
+        //¿Volver a editar o inicio? En fin lo mandare al inicio mientras
+        return redirect('/');
+        //dd($request);
+
     }
 
     /**

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePhoneType extends Migration
+class CreateStates extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreatePhoneType extends Migration
      */
     public function up()
     {
-        Schema::create('Phone_Type', function (Blueprint $table) {
+        Schema::create('States', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name',50)->unique();
+            $table->text('name');
         });
     }
 
@@ -26,6 +26,6 @@ class CreatePhoneType extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Phone_Type');
+        Schema::dropIfExists('States');
     }
 }

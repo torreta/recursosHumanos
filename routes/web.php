@@ -16,8 +16,13 @@ Route::get('/', function () {
 });
 
 
-Route::resource('/register', 'UserController');
+
 Route::get('/register', 'UserController@Index')->name('register.index');
+Route::post('/register', 'UserController@Store')->name('register.store');
+Route::get('/register/create', 'UserController@Create')->name('register.create');
+Route::get('/user/{id}/edit/{edit_type}', 'UserController@edit')->name('register.edit');
+Route::post('/user/{id}/edit', 'UserController@update')->name('register.update');
+
 //Authentication
 Route::get('/login','UserController@showLogin')->name('login');
 Route::post('/login', 'UserController@Login');

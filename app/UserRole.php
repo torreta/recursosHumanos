@@ -15,4 +15,7 @@ class UserRole extends Model
     {
         return $this->belongsTo('App\Role');
     }
+
+    protected $table = 'User_Roles';
+    protected $primaryKey = 'user_id';
 }

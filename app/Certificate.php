@@ -10,4 +10,6 @@ class Certificate extends Model
     {
         return $this->belongsTo('App\Curriculum');
     }
+
+    protected $table = 'Certificates';
 }

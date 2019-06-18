@@ -13,10 +13,10 @@ class CreateDirection extends Migration
      */
     public function up()
     {
-        Schema::create('Direction', function (Blueprint $table) {
+        Schema::create('Directions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('enterprise_id')->nullable();
-            $table->foreign('enterprise_id')->references('id')->on('Enterprise');
+            $table->foreign('enterprise_id')->references('id')->on('Enterprises');
             $table->bigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('Users');
             $table->text('country');
@@ -27,7 +27,7 @@ class CreateDirection extends Migration
             $table->text('reference');
             $table->text('postal_code');
             $table->bigInteger('direction_type_id');
-            $table->foreign('direction_type_id')->references('id')->on('Direction_Type');
+            $table->foreign('direction_type_id')->references('id')->on('Direction_Types');
             $table->timestamps();
         });
     }
@@ -39,6 +39,6 @@ class CreateDirection extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Direction');
+        Schema::dropIfExists('Directions');
     }
 }

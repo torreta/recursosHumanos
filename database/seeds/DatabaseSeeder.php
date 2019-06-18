@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
         user_status_seeder::class,
         user_seeder::class,
         direction_type_seeder::class,
-        phone_type_seeder::class
+        phone_type_seeder::class,
+        states_seeder::class,
     ]);
 
     }

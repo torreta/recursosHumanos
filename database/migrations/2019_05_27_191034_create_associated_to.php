@@ -15,7 +15,7 @@ class CreateAssociatedTo extends Migration
     {
         Schema::create('Associated_To', function (Blueprint $table) {
             $table->bigInteger('enterprise_id');
-            $table->foreign('enterprise_id')->references('id')->on('Enterprise');
+            $table->foreign('enterprise_id')->references('id')->on('Enterprises');
             $table->bigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('Users');
             $table->timestamps();
